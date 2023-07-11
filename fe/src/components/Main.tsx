@@ -1,5 +1,5 @@
 import { useFetch } from "hooks/useFetch";
-import { Column } from "./Column";
+import Column from "./Column";
 
 export const Main = () => {
   const { response, errorMsg, loading } = useFetch({ url: "/", method: "get" });
@@ -8,7 +8,7 @@ export const Main = () => {
   if (errorMsg) return <div>{errorMsg}</div>;
 
   return (
-    <div>
+    <div css={{ display: "flex" }}>
       {response.map(({ columnId, columnName, cards }) => (
         <Column
           key={columnId}

@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { Card } from "../types";
 import { ColumnHeader } from "./ColumnHeader";
+import { Card, CardData } from "@components/Card";
 
 interface ColumnDataProps {
   columnId: number;
   columnName: string;
-  cards: Card[];
+  cards: CardData[];
 }
 
 export const Column = ({ columnId, columnName, cards }: ColumnDataProps) => {
-  const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [isAdding, setIsAdding] = useState<boolean>(true);
   const handleClickAddCard = () => setIsAdding(true);
   const cardCount = cards.length;
 
@@ -21,6 +21,10 @@ export const Column = ({ columnId, columnName, cards }: ColumnDataProps) => {
         cardCount={cardCount}
         handleClickAddCard={handleClickAddCard}
       />
+      {isAdding && <Card cardStatus={"editing"} />}
+      {cards.map((CardData, index) => (
+        <Card key={`${index}_${CardData.id}`} cardData={CardData} />
+      ))}
     </div>
   );
 };

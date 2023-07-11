@@ -1,4 +1,5 @@
 import { rest } from "msw";
+import { CARDS } from "./data";
 
 export const handlers = [
   rest.get("/", (req, res, ctx) => {
@@ -6,20 +7,7 @@ export const handlers = [
       {
         columnId: 1,
         columnName: "해야 할 일",
-        cards: [
-          {
-            cardId: 1,
-            title: "GitHub 공부하기",
-            text: "add, commit, push, rebase, merge",
-            writer: "jay",
-          },
-          {
-            cardId: 2,
-            title: "블로그에 포스팅할 것",
-            text: "모던 자바스크립트 1장",
-            writer: "jay",
-          },
-        ],
+        cards: CARDS,
       },
       {
         columnId: 2,

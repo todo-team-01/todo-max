@@ -8,15 +8,15 @@ interface UseFetchProps {
 }
 
 export const useFetch = ({ url, method, body }: UseFetchProps) => {
-  const [state, setState] = useState([]);
+  const [response, setResponse] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await http[method](url, body);
-        setState(response);
+        const res = await http[method](url, body);
+        setResponse(res);
       } catch (error) {
         if (error instanceof Error) {
           console.error("HTTP Error: ", error.message);
@@ -31,7 +31,7 @@ export const useFetch = ({ url, method, body }: UseFetchProps) => {
   }, [url, method, body]);
 
   return {
-    state,
+    response,
     errorMsg,
     loading,
   };

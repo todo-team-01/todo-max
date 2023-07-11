@@ -11,7 +11,8 @@ public class CardRemover {
 		this.cardRepository = cardRepository;
 	}
 
-	public void remove(Long id) {
-		cardRepository.remove(id);
+	public void delete(Long id) {
+		cardRepository.delete(id);
 	}
+
 }

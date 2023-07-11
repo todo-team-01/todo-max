@@ -12,6 +12,7 @@ public class CardService {
 	}
 
 	public void deleteCardById(Long id) {
-		cardRemover.remove(id);
+		cardRemover.delete(id);
 	}
+
 }

@@ -2,12 +2,17 @@ import { colors } from "@constants/colors";
 import { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant: "blue" | "red" | "gray";
+  variant?: "blue" | "red" | "gray" | "transparent";
   text?: string;
   onClick: () => void;
 }
 
-export const Button = ({ variant, text, onClick, children }: ButtonProps) => {
+export const Button = ({
+  variant = "transparent",
+  text,
+  onClick,
+  children,
+}: ButtonProps) => {
   return (
     <button
       css={{
@@ -48,5 +53,9 @@ const VARIANTS = {
   gray: {
     color: colors.textDefault,
     background: colors.surfaceAlt,
+  },
+  transparent: {
+    color: colors.textDefault,
+    background: "none",
   },
 };

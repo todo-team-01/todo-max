@@ -1,9 +1,6 @@
-interface EditIconProps {
-  size: number;
-  rgb: string;
-}
+import { IconProps } from "./types";
 
-export const EditIcon = ({ size, rgb }: EditIconProps) => {
+export const EditIcon = ({ size, rgb }: IconProps) => {
   return (
     <svg
       width={size}

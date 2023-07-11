@@ -1,9 +1,6 @@
-interface ClosedSVGProps {
-  size: number;
-  rgb: string;
-}
+import { IconProps } from "./types";
 
-export const HistoryIcon = ({ size, rgb }: ClosedSVGProps) => {
+export const HistoryIcon = ({ size, rgb }: IconProps) => {
   return (
     <svg
       width={size}

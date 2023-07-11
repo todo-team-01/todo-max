@@ -2,7 +2,9 @@ package org.codesquad.todo.domain.card;
 
 import javax.sql.DataSource;
 
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -11,6 +13,12 @@ public class CardRepository {
 
 	public CardRepository(DataSource dataSource) {
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+	}
+
+	public void remove(Long id) {
+		String sql = "DELETE FROM card where id = :id";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+		jdbcTemplate.update(sql, param);
 	}
 }
 

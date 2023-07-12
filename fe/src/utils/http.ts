@@ -27,5 +27,15 @@ export const http = {
     return response.json();
   },
 
-  delete: (url: string) => {},
+  delete: async (url: string) => {
+    const option = {
+      method: "DELETE",
+    };
+
+    const response = await fetch(url, option);
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+  },
 };

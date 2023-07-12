@@ -3,21 +3,38 @@ import { Button } from "./base/Button";
 import { ClosedIcon } from "./icon/ClosedIcon";
 import { EditIcon } from "./icon/EditIcon";
 import { useState } from "react";
+import { useFetch } from "hooks/useFetch";
 
 export interface CardData {
-  id?: number;
-  name?: string;
-  title?: string;
-  text?: string;
-  writer?: string;
+  cardId: number;
+  title: string;
+  text: string;
+  writer: string;
 }
 
 interface CardProps {
   cardData?: CardData;
   cardStatus?: "editing" | "normal";
+  reFetch: () => void;
 }
-export const Card = ({ cardData, cardStatus = "normal" }: CardProps) => {
+
+export const Card = ({
+  cardData,
+  cardStatus = "normal",
+  reFetch,
+}: CardProps) => {
   const [status, setStatus] = useState(cardStatus);
+
+  const { errorMsg, loading, fetch } = useFetch({
+    url: `/cards/${cardData?.cardId}`,
+    method: "delete",
+    autoFetch: false,
+  });
+
+  const handleClickRemove = async () => {
+    await fetch();
+    reFetch();
+  };
 
   const handleClickEdit = () => {
     setStatus("editing");
@@ -50,7 +67,7 @@ export const Card = ({ cardData, cardStatus = "normal" }: CardProps) => {
         </div>
         {status !== "editing" && (
           <div css={{ right: "0" }}>
-            <Button onClick={() => {}}>
+            <Button onClick={handleClickRemove}>
               <ClosedIcon size={24} rgb={colors.textDefault} />
             </Button>
             <Button onClick={handleClickEdit}>

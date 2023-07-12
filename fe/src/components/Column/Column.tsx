@@ -6,9 +6,15 @@ interface ColumnDataProps {
   columnId: number;
   columnName: string;
   cards: CardData[];
+  reFetch: () => void;
 }
 
-export const Column = ({ columnId, columnName, cards }: ColumnDataProps) => {
+export const Column = ({
+  columnId,
+  columnName,
+  cards,
+  reFetch,
+}: ColumnDataProps) => {
   const [isAdding, setIsAdding] = useState<boolean>(true);
   const handleClickAddCard = () => setIsAdding(true);
   const cardCount = cards.length;
@@ -21,9 +27,13 @@ export const Column = ({ columnId, columnName, cards }: ColumnDataProps) => {
         cardCount={cardCount}
         handleClickAddCard={handleClickAddCard}
       />
-      {isAdding && <Card cardStatus={"editing"} />}
+      {isAdding && <Card cardStatus={"editing"} reFetch={reFetch} />}
       {cards.map((cardData, index) => (
-        <Card key={`${index}_${cardData.id}`} cardData={cardData} />
+        <Card
+          key={`${index}_${cardData.cardId}`}
+          cardData={cardData}
+          reFetch={reFetch}
+        />
       ))}
     </div>
   );

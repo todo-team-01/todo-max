@@ -1,16 +1,15 @@
 import { CardData } from "@components/Card";
 import { faker } from "@faker-js/faker";
 
-export function createRandomCard(): CardData {
+export function createRandomCard(cardId: number): CardData {
   return {
-    id: Number(faker.string.uuid()),
-    name: faker.internet.userName(),
+    cardId,
     title: faker.internet.domainName(),
     text: faker.word.words(),
     writer: faker.internet.userName(),
   };
 }
 
-export const CARDS: CardData[] = faker.helpers.multiple(createRandomCard, {
-  count: 100,
-});
+export const CARDS: CardData[] = Array.from({ length: 100 }, (_, index) =>
+  createRandomCard(index + 100)
+);

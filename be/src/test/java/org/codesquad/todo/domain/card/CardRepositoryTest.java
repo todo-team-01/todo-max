@@ -94,4 +94,33 @@ public class CardRepositoryTest {
 		assertThat(findCard).usingRecursiveComparison()
 			.isEqualTo(updateCard);
 	}
+
+	@DisplayName("해당하는 ID의 카드가 존재한다면 삭제하고 1을 반환한다.")
+	@Test
+	void deleteExistentCard() {
+		// given
+		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
+		Card savedCard = cardRepository.save(card);
+
+		// when
+		int deleted = cardRepository.delete(savedCard.getId());
+
+		// then
+		assertThat(deleted).isEqualTo(1);
+	}
+
+	@DisplayName("해당하는 ID의 카드가 존재하지 않는 경우 0을 반환한다.")
+	@Test
+	void deleteNonexistentCard() {
+		// given
+		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
+		cardRepository.save(card);
+
+		// when
+		int deleted = cardRepository.delete(2L);
+
+		// then
+		assertThat(deleted).isEqualTo(0);
+	}
+
 }

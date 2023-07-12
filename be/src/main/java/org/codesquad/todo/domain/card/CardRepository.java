@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -62,7 +63,7 @@ public class CardRepository {
 	}
 
 	public int delete(Long id) {
-		return jdbcTemplate.update(DELETE_CARD_SQL, Map.of(CARD_ID_COLUMN, id));
+		return jdbcTemplate.update(DELETE_CARD_SQL, new MapSqlParameterSource(Map.of(CARD_ID_COLUMN, id)));
 	}
 
 	private static final RowMapper<Card> CARD_ROW_MAPPER = (rs, rowNum) -> {

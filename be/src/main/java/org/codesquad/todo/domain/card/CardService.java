@@ -30,8 +30,9 @@ public class CardService {
 		return cardManager.updateCard(id, title, content);
 	}
 
-	public void deleteCardById(Long id) {
-		cardRemover.delete(id);
+	public int deleteCardById(Long id) {
+		return cardRemover.delete(id);
 	}
+
 }
 

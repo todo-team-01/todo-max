@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,7 +22,7 @@ public class CardServiceTest {
 	@Mock
 	private CardManager cardManager;
 
-	@DisplayName("카드를 저장한다")
+	@DisplayName("카드를 저장할 때 카드의 정보들을 입력하면 저장하고 카드를 반환한다.")
 	@Test
 	void saveCard() {
 		// given
@@ -31,13 +32,30 @@ public class CardServiceTest {
 		given(cardManager.updatePrevCardId(any(), any())).willReturn(1);
 
 		// when
-		Card savedCard = cardService.saveCard(card, nextId);
+		Card actual = cardService.saveCard(card, nextId);
 
 		// then
-		assertThat(savedCard.getId()).isEqualTo(1L);
-		assertThat(savedCard.getTitle()).isEqualTo(card.getTitle());
-		assertThat(savedCard.getContent()).isEqualTo(card.getContent());
-		assertThat(savedCard.getMemberId()).isEqualTo(card.getMemberId());
-		assertThat(savedCard.getPrevCardId()).isEqualTo(card.getPrevCardId());
+		assertThat(actual.getId()).isEqualTo(1L);
+		assertThat(actual).usingRecursiveComparison()
+			.ignoringFields("id")
+			.isEqualTo(card);
+		then(cardManager).should(Mockito.times(1))
+			.updatePrevCardId(nextId, actual.getId());
+	}
+
+	@DisplayName("카드를 수정할 때 수정할 카드 정보들을 입력하면 수정이 되고 수정한 카드 갯수를 반환한다.")
+	@Test
+	void modifyCard() {
+		// given
+		Long id = 1L;
+		String title = "새로운 타이틀용";
+		String content = "새로운 내용";
+		given(cardManager.updateCard(any(), any(), any())).willReturn(1);
+
+		// when
+		int updatedCount = cardService.modifyCard(id, title, content);
+
+		// then
+		assertThat(updatedCount).isEqualTo(1);
 	}
 }

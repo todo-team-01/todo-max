@@ -48,8 +48,8 @@ public class CardRepository {
 		String sql = "UPDATE card "
 			+ "SET title = :title, "
 			+ "content = :content, "
-			+ "column_id = :columnId "
-			+ "member_id = :memberId "
+			+ "column_id = :columnId, "
+			+ "member_id = :memberId, "
 			+ "prev_card_id = :prevCardId "
 			+ "WHERE id = :id";
 		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(card));
@@ -59,8 +59,10 @@ public class CardRepository {
 		return jdbcTemplate.update(DELETE_CARD_SQL, Map.of(CARD_ID_COLUMN, id));
 	}
 
-	private static final RowMapper<Card> CARD_ROW_MAPPER = (rs, rowNum) ->
-		new Card(rs.getLong("id"), rs.getString("title"), rs.getString("content"),
-			rs.getLong("column_id"), rs.getLong("member_id"), rs.getLong("prev_card_id"));
+	private static final RowMapper<Card> CARD_ROW_MAPPER = (rs, rowNum) -> {
+		long prevCardId = rs.getLong("prev_card_id");
+		return new Card(rs.getLong("id"), rs.getString("title"), rs.getString("content"),
+			rs.getLong("column_id"), rs.getLong("member_id"), prevCardId == 0 ? null : prevCardId);
+	};
 }
 

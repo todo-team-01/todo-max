@@ -11,6 +11,14 @@ public class ErrorResponse {
 		this.message = message;
 	}
 
+	public static ErrorResponse from(ApiException apiException) {
+		return new ErrorResponse(apiException.getHttpStatus(), apiException.getMessage());
+	}
+
+	public static ErrorResponse createServerError() {
+		return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러");
+	}
+
 	public int getStatus() {
 		return httpStatus.value();
 	}

@@ -12,8 +12,13 @@ public class CardManager {
 		this.cardReader = cardReader;
 	}
 
-	public int updatePrevCardId(Long nextCardId, Long prevCardId) {
-		Card findNextCard = cardReader.findById(nextCardId);
+	public int updatePrevCardId(Long updateTargetId, Long prevCardId) {
+		Card findNextCard = cardReader.findById(updateTargetId);
 		return cardRepository.update(findNextCard.createInstanceWithPrevId(prevCardId));
+	}
+
+	public int updateCard(Long id, String title, String content) {
+		Card card = cardReader.findById(id);
+		return cardRepository.update(card.createInstanceWithTitleAndContent(title, content));
 	}
 }

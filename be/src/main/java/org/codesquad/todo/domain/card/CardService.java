@@ -22,13 +22,16 @@ public class CardService {
 		if (Objects.nonNull(nextCardId)) {
 			cardManager.updatePrevCardId(nextCardId, newCard.getId());
 		}
-		
+
 		return newCard;
+	}
+
+	public int modifyCard(Long id, String title, String content) {
+		return cardManager.updateCard(id, title, content);
 	}
 
 	public void deleteCardById(Long id) {
 		cardRemover.delete(id);
 	}
-
 }
 

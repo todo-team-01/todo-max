@@ -19,9 +19,9 @@ public class CardRepository {
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-	public void delete(Long id) {
-		jdbcTemplate.update(DELETE_CARD_SQL, new MapSqlParameterSource(Map.of(CARD_ID_COLUMN, id)));
+	public int delete(Long id) {
+		return jdbcTemplate.update(DELETE_CARD_SQL, new MapSqlParameterSource(Map.of(CARD_ID_COLUMN, id)));
 	}
-	
+
 }
 

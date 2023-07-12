@@ -26,6 +26,7 @@ public class CardController {
 		cardService.deleteCardById(id);
 		return ResponseEntity.ok().build();
 	}
+
 	@PostMapping("/cards")
 	public ResponseEntity<CardSaveResponseDto> saveCard(@RequestBody CardSaveRequestDto cardSaveRequestDto) {
 		Card card = cardService.saveCard(cardSaveRequestDto.toCard());

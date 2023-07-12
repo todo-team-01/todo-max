@@ -21,6 +21,14 @@ public class Card {
 		return new Card(id, this.title, this.content, this.columnId, this.memberId, this.prevCardId);
 	}
 
+	public Card createInstanceWithPrevId(Long prevCardId) {
+		return new Card(this.id, this.title, this.content, this.columnId, this.memberId, this.prevCardId);
+	}
+
+	public Card createInstanceWithTitleAndContent(String title, String content) {
+		return new Card(this.id, title, content, this.columnId, this.memberId, this.prevCardId);
+	}
+
 	public Long getId() {
 		return id;
 	}

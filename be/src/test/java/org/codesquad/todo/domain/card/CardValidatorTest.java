@@ -5,8 +5,8 @@ import static org.mockito.BDDMockito.*;
 
 import org.codesquad.todo.config.ColumnNotFoundException;
 import org.codesquad.todo.config.MemberNotFoundException;
-import org.codesquad.todo.domain.column.ColumnReader;
-import org.codesquad.todo.domain.member.MemberReader;
+import org.codesquad.todo.domain.column.ColumnValidator;
+import org.codesquad.todo.domain.member.MemberValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,18 +21,18 @@ public class CardValidatorTest {
 	private CardValidator cardValidator;
 
 	@Mock
-	private ColumnReader columnReader;
+	private ColumnValidator columnValidator;
 
 	@Mock
-	private MemberReader memberReader;
+	private MemberValidator memberValidator;
 
 	@DisplayName("카드 정보를 가지고 카드 생성을 하는 검증을 한다.")
 	@Test
 	void verifyCard() {
 		// given
 		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		given(memberReader.isExist(any())).willReturn(true);
-		given(columnReader.isExist(any())).willReturn(true);
+		given(columnValidator.isExist(any())).willReturn(true);
+		given(memberValidator.isExist(any())).willReturn(true);
 
 		// when
 
@@ -45,7 +45,7 @@ public class CardValidatorTest {
 	void verifyCardFail() {
 		// given
 		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		given(memberReader.isExist(any())).willReturn(false);
+		given(memberValidator.isExist(any())).willReturn(false);
 
 		// when
 
@@ -58,8 +58,8 @@ public class CardValidatorTest {
 	void verifyCardFail2() {
 		// given
 		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		given(memberReader.isExist(any())).willReturn(true);
-		given(columnReader.isExist(any())).willReturn(false);
+		given(memberValidator.isExist(any())).willReturn(true);
+		given(columnValidator.isExist(any())).willReturn(false);
 
 		// when
 

@@ -21,17 +21,18 @@ public class CardController {
 		this.cardService = cardService;
 	}
 
+	@PostMapping("/cards")
+	public ResponseEntity<CardSaveResponseDto> saveCard(@RequestBody CardSaveRequestDto cardSaveRequestDto) {
+		Card card = cardService.saveCard(cardSaveRequestDto.toCard(), cardSaveRequestDto.getNextCardId());
+
+		return ResponseEntity.created(URI.create("/cards/" + card.getId()))
+			.body(CardSaveResponseDto.from(card));
+	}
+
 	@DeleteMapping("/cards/{id}")
 	public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
 		cardService.deleteCardById(id);
 		return ResponseEntity.ok().build();
-	}
-	@PostMapping("/cards")
-	public ResponseEntity<CardSaveResponseDto> saveCard(@RequestBody CardSaveRequestDto cardSaveRequestDto) {
-		Card card = cardService.saveCard(cardSaveRequestDto.toCard());
-
-		return ResponseEntity.created(URI.create("/cards/" + card.getId()))
-			.body(CardSaveResponseDto.from(card));
 	}
 }
 

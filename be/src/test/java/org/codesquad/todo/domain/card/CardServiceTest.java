@@ -18,15 +18,20 @@ public class CardServiceTest {
 	@Mock
 	private CardAppender cardAppender;
 
+	@Mock
+	private CardManager cardManager;
+
 	@DisplayName("카드를 저장한다")
 	@Test
 	void saveCard() {
 		// given
+		Long nextId = 1L;
 		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
 		given(cardAppender.append(any())).willReturn(card.createInstanceWithId(1L));
+		given(cardManager.updatePrevCardId(any(), any())).willReturn(1);
 
 		// when
-		Card savedCard = cardService.saveCard(card);
+		Card savedCard = cardService.saveCard(card, nextId);
 
 		// then
 		assertThat(savedCard.getId()).isEqualTo(1L);

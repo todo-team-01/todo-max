@@ -22,8 +22,8 @@ export const Column = ({ columnId, columnName, cards }: ColumnDataProps) => {
         handleClickAddCard={handleClickAddCard}
       />
       {isAdding && <Card cardStatus={"editing"} />}
-      {cards.map((CardData, index) => (
-        <Card key={`${index}_${CardData.id}`} cardData={CardData} />
+      {cards.map((cardData, index) => (
+        <Card key={`${index}_${cardData.id}`} cardData={cardData} />
       ))}
     </div>
   );

@@ -8,7 +8,7 @@ import { useFetch } from "hooks/useFetch";
 export interface CardData {
   cardId: number;
   title: string;
-  text: string;
+  content: string;
   writer: string;
 }
 
@@ -24,16 +24,42 @@ export const Card = ({
   reFetch,
 }: CardProps) => {
   const [status, setStatus] = useState(cardStatus);
+  const [title, setTitle] = useState(cardData?.title);
+  const [content, setContent] = useState(cardData?.content);
 
-  const { errorMsg, loading, fetch } = useFetch({
+  const {
+    errorMsg: errorMsgDelete,
+    loading: loadingDelete,
+    fetch: fetchDelete,
+  } = useFetch({
     url: `/cards/${cardData?.cardId}`,
     method: "delete",
-    autoFetch: false,
+  });
+
+  const {
+    errorMsg: errorMsgUpdate,
+    loading: loadingUpdate,
+    fetch: fetchUpdate,
+  } = useFetch({
+    url: `/cards/${cardData?.cardId}`,
+    method: "put",
+    body: {
+      changedCardTitle: title,
+      changedCardContent: content,
+    },
   });
 
   const handleClickRemove = async () => {
-    await fetch();
+    await fetchDelete();
     reFetch();
+  };
+
+  const handleClickUpdate = async () => {
+    if (cardData?.title !== title || cardData?.content !== content) {
+      setStatus("normal");
+      await fetchUpdate();
+      reFetch();
+    }
   };
 
   const handleClickEdit = () => {
@@ -42,6 +68,16 @@ export const Card = ({
 
   const handleClickCancelEdit = () => {
     setStatus("normal");
+    setContent(cardData?.content);
+    setTitle(cardData?.title);
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
   };
 
   return (
@@ -54,13 +90,17 @@ export const Card = ({
         <div css={{ display: "flex", flexDirection: "column" }}>
           {status === "editing" ? (
             <>
-              <input type="text" defaultValue={cardData && cardData.title} />
-              <textarea defaultValue={cardData && cardData.text} />
+              <input
+                type="content"
+                value={title}
+                onChange={handleTitleChange}
+              />
+              <textarea value={content} onChange={handleTextChange} />
             </>
           ) : (
             <>
-              <div>{cardData && cardData.text}</div>
               <div>{cardData && cardData.title}</div>
+              <div>{cardData && cardData.content}</div>
             </>
           )}
           <div> {cardData && `author by ${cardData.writer}`}</div>
@@ -80,7 +120,7 @@ export const Card = ({
       {status === "editing" && (
         <div css={{ display: "flex", justifyContent: "space-around" }}>
           <Button variant="gray" text="취소" onClick={handleClickCancelEdit} />
-          <Button variant="blue" text="등록" onClick={() => {}} />
+          <Button variant="blue" text="등록" onClick={handleClickUpdate} />
         </div>
       )}
     </div>

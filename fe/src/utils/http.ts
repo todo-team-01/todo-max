@@ -9,7 +9,7 @@ export const http = {
     return response.json();
   },
 
-  post: async (url: string, body?: Request) => {
+  post: async (url: string, body?: object) => {
     const option = {
       method: "POST",
       headers: {
@@ -19,6 +19,24 @@ export const http = {
     };
 
     const response = await fetch(url, option);
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    return response.json();
+  },
+
+  put: async (url: string, body?: object) => {
+    const options = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    };
+
+    const response = await fetch(url, options);
 
     if (!response.ok) {
       throw new Error(response.statusText);

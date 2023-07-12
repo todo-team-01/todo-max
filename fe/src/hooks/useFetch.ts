@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { http } from "utils/http";
-interface UseFetchProps {
+
+interface UseFetchProps<T = Record<string, unknown>> {
   url: string;
-  method: "get" | "post" | "delete";
-  body?: Request;
+  method: "get" | "post" | "delete" | "put";
+  body?: T;
   autoFetch?: boolean;
 }
 
-export const useFetch = ({
+export const useFetch = <
+  T extends Record<string, unknown> = Record<string, unknown>
+>({
   url,
   method,
   body,
   autoFetch = false,
-}: UseFetchProps) => {
+}: UseFetchProps<T>) => {
   const [response, setResponse] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);

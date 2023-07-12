@@ -5,7 +5,7 @@ export function createRandomCard(cardId: number): CardData {
   return {
     cardId,
     title: faker.internet.domainName(),
-    text: faker.word.words(),
+    content: faker.word.words(),
     writer: faker.internet.userName(),
   };
 }

@@ -14,5 +14,15 @@ public class CardService {
 		return cardAppender.append(card);
 	}
 
+	private CardRemover cardRemover;
+
+	public CardService(CardRemover cardRemover) {
+		this.cardRemover = cardRemover;
+	}
+
+	public void deleteCardById(Long id) {
+		cardRemover.delete(id);
+	}
+
 }
 

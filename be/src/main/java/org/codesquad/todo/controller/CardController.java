@@ -7,6 +7,8 @@ import org.codesquad.todo.controller.dto.CardSaveResponseDto;
 import org.codesquad.todo.domain.card.Card;
 import org.codesquad.todo.domain.card.CardService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +21,11 @@ public class CardController {
 		this.cardService = cardService;
 	}
 
+	@DeleteMapping("/cards/{id}")
+	public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
+		cardService.deleteCardById(id);
+		return ResponseEntity.ok().build();
+	}
 	@PostMapping("/cards")
 	public ResponseEntity<CardSaveResponseDto> saveCard(@RequestBody CardSaveRequestDto cardSaveRequestDto) {
 		Card card = cardService.saveCard(cardSaveRequestDto.toCard());

@@ -11,7 +11,7 @@ interface HistoryData {
 
 export const History = ({ closeHandler }: { closeHandler: () => void }) => {
   const [historyData, setHistoryData] = useState([]);
-  const { response, errorMsg, loading, fetch } = useFetch({
+  const { response, fetch } = useFetch({
     url: "/api/history",
     method: "get",
     autoFetch: true,
@@ -49,6 +49,22 @@ export const History = ({ closeHandler }: { closeHandler: () => void }) => {
     await fetch();
   };
 
+  const createHighlightElement = (str: string) => {
+    return (
+      <div css={{ padding: "16px", borderBottom: "1px solid gray" }}>
+        {str.split("'").map((part, index) =>
+          index % 2 === 0 ? (
+            part
+          ) : (
+            <b key={index} css={{ fontWeight: "bold" }}>
+              {part}
+            </b>
+          )
+        )}
+      </div>
+    );
+  };
+
   return (
     <div
       ref={historyRef}
@@ -82,7 +98,7 @@ export const History = ({ closeHandler }: { closeHandler: () => void }) => {
       <div>
         {historyData.length ? (
           historyData.map((data: HistoryData, i) => (
-            <div key={i}>{processString(data.historyContent)}</div>
+            <div key={i}>{createHighlightElement(data.historyContent)}</div>
           ))
         ) : (
           <div css={{ padding: "16px", textAlign: "center" }}>
@@ -97,22 +113,6 @@ export const History = ({ closeHandler }: { closeHandler: () => void }) => {
           </span>
         </Button>
       </div>
-    </div>
-  );
-};
-
-const processString = (str: string) => {
-  return (
-    <div css={{ padding: "16px", borderBottom: "1px solid gray" }}>
-      {str.split("'").map((part, index) =>
-        index % 2 === 0 ? (
-          part
-        ) : (
-          <b key={index} css={{ fontWeight: "bold" }}>
-            {part}
-          </b>
-        )
-      )}
     </div>
   );
 };

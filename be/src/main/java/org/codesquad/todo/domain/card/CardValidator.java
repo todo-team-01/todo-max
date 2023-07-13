@@ -17,11 +17,11 @@ public class CardValidator {
 	}
 
 	public void verifyCard(Card card) {
-		if (!memberValidator.isExist(card.getMemberId())) {
+		if (!memberValidator.exist(card.getMemberId())) {
 			throw new MemberNotFoundException();
 		}
 
-		if (!columnValidator.isExist(card.getColumnId())) {
+		if (!columnValidator.exist(card.getColumnId())) {
 			throw new ColumnNotFoundException();
 		}
 	}

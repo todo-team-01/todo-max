@@ -10,7 +10,7 @@ public class MemberValidator {
 		this.memberRepository = memberRepository;
 	}
 
-	public boolean isExist(Long memberId) {
-		return memberRepository.isExist(memberId);
+	public boolean exist(Long memberId) {
+		return memberRepository.exist(memberId);
 	}
 }

@@ -31,8 +31,8 @@ public class CardValidatorTest {
 	void verifyCard() {
 		// given
 		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		given(columnValidator.isExist(any())).willReturn(true);
-		given(memberValidator.isExist(any())).willReturn(true);
+		given(columnValidator.exist(any())).willReturn(true);
+		given(memberValidator.exist(any())).willReturn(true);
 
 		// when
 
@@ -45,7 +45,7 @@ public class CardValidatorTest {
 	void verifyCardFail() {
 		// given
 		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		given(memberValidator.isExist(any())).willReturn(false);
+		given(memberValidator.exist(any())).willReturn(false);
 
 		// when
 
@@ -58,8 +58,8 @@ public class CardValidatorTest {
 	void verifyCardFail2() {
 		// given
 		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		given(memberValidator.isExist(any())).willReturn(true);
-		given(columnValidator.isExist(any())).willReturn(false);
+		given(memberValidator.exist(any())).willReturn(true);
+		given(columnValidator.exist(any())).willReturn(false);
 
 		// when
 

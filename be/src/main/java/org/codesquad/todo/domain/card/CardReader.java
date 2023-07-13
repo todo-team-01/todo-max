@@ -1,20 +1,24 @@
 package org.codesquad.todo.domain.card;
 
+import java.util.List;
+
 import org.codesquad.todo.config.CardNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CardReader {
-	private final CardValidator cardValidator;
 	private final CardRepository cardRepository;
 
-	public CardReader(CardValidator cardValidator, CardRepository cardRepository) {
-		this.cardValidator = cardValidator;
+	public CardReader(CardRepository cardRepository) {
 		this.cardRepository = cardRepository;
 	}
 
 	public Card findById(Long id) {
 		return cardRepository.findById(id)
 			.orElseThrow(CardNotFoundException::new);
+	}
+
+	public List<Card> findAllByColumnId(Long columnId) {
+		return cardRepository.findAllByColumnId(columnId);
 	}
 }

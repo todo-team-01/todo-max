@@ -16,9 +16,8 @@ public class MemberRepository {
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-	public Boolean isExist(Long memberId) {
+	public Boolean exist(Long memberId) {
 		String sql = "SELECT EXISTS(SELECT 1 FROM member WHERE id = :memberId)";
 		return jdbcTemplate.queryForObject(sql, Map.of("memberId", memberId), Boolean.class);
 	}
-
 }

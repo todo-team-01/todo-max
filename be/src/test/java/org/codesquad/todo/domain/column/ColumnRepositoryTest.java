@@ -72,4 +72,30 @@ public class ColumnRepositoryTest {
 		// then
 		assertThat(exist).isTrue();
 	}
+
+	@DisplayName("컬럼을 수정할 때 수정할 컬럼 정보들을 입력하면 수정이 되고 수정한 컬럼들의 수를 반환한다.")
+	@Test
+	void update() {
+		// given
+		Column updateColumn = new Column(오늘_할일.getId(), "변경된 오늘 할일");
+
+		// when
+		int actual = columnRepository.update(updateColumn);
+
+		// then
+		assertThat(actual).isEqualTo(1);
+	}
+
+	@DisplayName("캄럼을 삭제할 때 칼럼 아이디를 입력하면 칼럼이 삭제되고 삭제된 칼럼들의 수를 반환한다.")
+	@Test
+	void delete() {
+		// given
+
+		// when
+		int actual = columnRepository.delete(내일_할일.getId());
+
+		// then
+		assertThat(actual).isEqualTo(1);
+	}
+
 }

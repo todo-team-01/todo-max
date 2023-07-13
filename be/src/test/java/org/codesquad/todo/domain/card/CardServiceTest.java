@@ -78,4 +78,5 @@ public class CardServiceTest {
 		// then
 		assertThat(deleted).isEqualTo(1);
 	}
+
 }

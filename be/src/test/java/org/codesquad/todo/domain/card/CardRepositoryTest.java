@@ -123,4 +123,94 @@ public class CardRepositoryTest {
 		assertThat(deleted).isEqualTo(0);
 	}
 
+	@DisplayName("삭제하려는 카드와 자식 카드를 찾는다.")
+	@Test
+	void findWithChildById() {
+		// given
+		Card card1 = new Card(null, "변경 전 타이틀", "변경 전 내용", 1L, 1L, 2L);
+		Card card2 = new Card(null, "변경 후 타이틀", "변경 후 내용", 1L, 1L, null);
+		cardRepository.save(card1);
+		Card cardToDelete = cardRepository.save(card2);
+
+		// when
+		List<Card> cards = cardRepository.findWithChildById(cardToDelete.getId());
+
+		// then
+		assertThat(cards).hasSize(2)
+			.extracting("id", "prevCardId")
+			.containsExactlyInAnyOrder(
+				tuple(1L, 2L),
+				tuple(2L, null)
+			);
+	}
+
+	@DisplayName("자식 카드가 없는 카드를 찾는다.")
+	@Test
+	void findWithNoChildById() {
+		// given
+		Card card1 = new Card(null, "변경 전 타이틀", "변경 전 내용", 1L, 1L, 2L);
+		Card card2 = new Card(null, "변경 후 타이틀", "변경 후 내용", 1L, 1L, null);
+		Card cardToDelete = cardRepository.save(card1);
+		cardRepository.save(card2);
+
+		// when
+		List<Card> cards = cardRepository.findWithChildById(cardToDelete.getId());
+
+		// then
+		assertThat(cards).hasSize(1)
+			.extracting("id", "prevCardId")
+			.containsExactlyInAnyOrder(
+				tuple(1L, 2L)
+			);
+	}
+
+	@DisplayName("최상단에 위치한 카드를 삭제할 때 자신의 아래에 있는 카드의 prevCardId를 null로 변경한다.")
+	@Test
+	void updateBeforeDeleteWithNull() {
+		// given
+		Card card1 = new Card(null, "변경 전 타이틀", "변경 전 내용", 1L, 1L, 2L);
+		Card card2 = new Card(null, "변경 후 타이틀", "변경 후 내용", 1L, 1L, null);
+		Card childCard = cardRepository.save(card1);
+		Card cardToDelete = cardRepository.save(card2);
+
+		// when
+		int updated = cardRepository.updateBeforeDelete(childCard.getId(), cardToDelete.getPrevCardId());
+		List<Card> cards = cardRepository.findAll();
+
+		// then
+		assertThat(updated).isEqualTo(1);
+		assertThat(cards).hasSize(2)
+			.extracting("id", "prevCardId")
+			.containsExactlyInAnyOrder(
+				tuple(1L, null),
+				tuple(2L, null)
+			);
+	}
+
+	@DisplayName("자식 카드의 부모 카드를 삭제하려는 카드의 부모 카드로 변경한다.")
+	@Test
+	void updateBeforeDelete() {
+		// given
+		Card card1 = new Card(null, "변경 전 타이틀", "변경 전 내용", 1L, 1L, 2L);
+		Card card2 = new Card(null, "변경 전 타이틀", "변경 전 내용", 1L, 1L, 3L);
+		Card card3 = new Card(null, "변경 후 타이틀", "변경 후 내용", 1L, 1L, null);
+		Card childCard = cardRepository.save(card1);
+		Card cardToDelete = cardRepository.save(card2);
+		cardRepository.save(card3);
+
+		// when
+		int updated = cardRepository.updateBeforeDelete(childCard.getId(), cardToDelete.getPrevCardId());
+		List<Card> cards = cardRepository.findAll();
+
+		// then
+		assertThat(updated).isEqualTo(1);
+		assertThat(cards).hasSize(3)
+			.extracting("id", "prevCardId")
+			.containsExactlyInAnyOrder(
+				tuple(1L, 3L),
+				tuple(2L, 3L),
+				tuple(3L, null)
+			);
+	}
+
 }

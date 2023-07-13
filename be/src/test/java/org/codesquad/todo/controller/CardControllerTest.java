@@ -49,7 +49,7 @@ public class CardControllerTest {
 		CardSaveResponseDto responseBody = response.response().as(CardSaveResponseDto.class);
 
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		assertThat(responseBody.getCardId()).isEqualTo(4L);
+		assertThat(responseBody.getCardId()).isEqualTo(5L);
 		assertThat(responseBody.getColumnId()).isEqualTo(cardSaveRequestDto.getColumnId());
 		assertThat(responseBody.getCardTitle()).isEqualTo(cardSaveRequestDto.getCardTitle());
 		assertThat(responseBody.getCardContent()).isEqualTo(cardSaveRequestDto.getCardContent());

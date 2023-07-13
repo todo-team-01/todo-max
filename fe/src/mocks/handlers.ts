@@ -59,9 +59,24 @@ let columnData: Column[] = [
   },
 ];
 
+let historyData = [
+  {
+    historyId: 1,
+    historyContent: `'블로그에 포스팅할 것'을 '하고있는 일' 에서 '해야할 일'으로 '이동'하였습니다.`,
+  },
+  {
+    historyId: 2,
+    historyContent: `'블로그에 포스팅할 것'을 '하고있는 일' 에서 '해야할 일'으로 '이동'하였습니다.`,
+  },
+];
+
 export const handlers = [
   rest.get("/api", (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(columnData));
+  }),
+
+  rest.get("/api/history", (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json(historyData));
   }),
 
   rest.delete("/api/cards/:id", (req, res, ctx) => {
@@ -73,6 +88,12 @@ export const handlers = [
     }));
 
     return res(ctx.status(200), ctx.json(columnData));
+  }),
+
+  rest.delete("/api/history", (req, res, ctx) => {
+    historyData = [];
+
+    return res(ctx.status(200), ctx.json(historyData));
   }),
 
   rest.put("/api/cards/:id", (req, res, ctx) => {

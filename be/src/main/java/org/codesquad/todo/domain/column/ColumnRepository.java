@@ -41,4 +41,5 @@ public class ColumnRepository {
 
 	private static final RowMapper<Column> COLUMN_ROW_MAPPER = (rs, rowNum) ->
 		new Column(rs.getLong("id"), rs.getString("name"));
+
 }

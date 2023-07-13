@@ -1,5 +1,6 @@
 package org.codesquad.todo.domain.card;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class CardRepository {
 		return card.createInstanceWithId(keyHolder.getKey().longValue());
 	}
 
-	public Boolean exist(Long id) {
+	public Boolean exists(Long id) {
 		String sql = "SELECT EXISTS(SELECT 1 FROM card WHERE id = :id)";
 		return jdbcTemplate.queryForObject(sql, Map.of("id", id), Boolean.class);
 	}
@@ -51,6 +52,16 @@ public class CardRepository {
 		return jdbcTemplate.query(sql, Map.of("columnId", columnId), CARD_ROW_MAPPER);
 	}
 
+	public List<Card> findAll() {
+		String sql = "SELECT id, title, content, column_id, member_id, prev_card_id FROM card";
+		return jdbcTemplate.query(sql, CARD_ROW_MAPPER);
+	}
+
+	public List<Card> findWithChildById(Long cardId) {
+		String sql = " SELECT id, title, content, column_id, member_id, prev_card_id FROM card WHERE id = :id or prev_card_id = :id";
+		return jdbcTemplate.query(sql, Map.of("id", cardId), CARD_ROW_MAPPER);
+	}
+
 	public int update(Card card) {
 		String sql = "UPDATE card "
 			+ "SET title = :title, "
@@ -62,6 +73,18 @@ public class CardRepository {
 		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(card));
 	}
 
+	public int updateBeforeDelete(Long cardId, Long changedPrevId) {
+		String sql = "UPDATE card "
+			+ "SET prev_card_id = :changedPrevId "
+			+ "WHERE id = :cardId";
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("cardId", cardId);
+		paramMap.put("changedPrevId", changedPrevId);
+
+		return jdbcTemplate.update(sql, paramMap);
+	}
+
 	public int delete(Long id) {
 		return jdbcTemplate.update(DELETE_CARD_SQL, new MapSqlParameterSource(Map.of(CARD_ID_COLUMN, id)));
 	}
@@ -71,4 +94,8 @@ public class CardRepository {
 		return new Card(rs.getLong("id"), rs.getString("title"), rs.getString("content"),
 			rs.getLong("column_id"), rs.getLong("member_id"), prevCardId == 0 ? null : prevCardId);
 	};
+
+	private static final RowMapper<Long> ONLY_CARD_ID_ROW_MAPPER = (rs, rowNum) -> rs.getLong("id");
+
 }
+

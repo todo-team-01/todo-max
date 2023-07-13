@@ -31,6 +31,7 @@ public class CardService {
 	}
 
 	public int deleteCardById(Long id) {
+		cardManager.updateCardBeforeDelete(id);
 		return cardRemover.delete(id);
 	}
 

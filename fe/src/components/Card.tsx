@@ -2,6 +2,7 @@ import { colors } from "@constants/colors";
 import { useFetch } from "hooks/useFetch";
 import { useState } from "react";
 import { Button } from "./base/Button";
+import { RemoveModal } from "./base/RemoveModal";
 import { ClosedIcon } from "./icon/ClosedIcon";
 import { EditIcon } from "./icon/EditIcon";
 
@@ -20,6 +21,7 @@ export const Card = ({ cardData, updateColumnList }: CardProps) => {
   const [status, setStatus] = useState("normal");
   const [title, setTitle] = useState(cardData.title);
   const [content, setContent] = useState(cardData.content);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const {
     errorMsg: errorMsgDelete,
@@ -42,6 +44,14 @@ export const Card = ({ cardData, updateColumnList }: CardProps) => {
       changedCardContent: content,
     },
   });
+
+  const openModal = () => {
+    setIsOpenModal(true);
+  };
+
+  const closeModal = () => {
+    setIsOpenModal(false);
+  };
 
   const handleClickRemove = async () => {
     await fetchDelete();
@@ -97,7 +107,7 @@ export const Card = ({ cardData, updateColumnList }: CardProps) => {
         </div>
         {status !== "editing" && (
           <div css={{ right: "0" }}>
-            <Button onClick={handleClickRemove}>
+            <Button onClick={openModal}>
               <ClosedIcon size={24} rgb={colors.textDefault} />
             </Button>
             <Button onClick={handleClickEdit}>
@@ -113,6 +123,13 @@ export const Card = ({ cardData, updateColumnList }: CardProps) => {
           <Button variant="blue" text="등록" onClick={handleClickUpdate} />
         </div>
       )}
+
+      <RemoveModal
+        isOpen={isOpenModal}
+        removeHandler={handleClickRemove}
+        closeHandler={closeModal}
+        text={"카드 삭제"}
+      />
     </div>
   );
 };

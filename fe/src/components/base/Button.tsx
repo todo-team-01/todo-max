@@ -48,7 +48,7 @@ const VARIANTS = {
   },
   red: {
     color: colors.textWhiteDefault,
-    background: colors.surfaceDanger,
+    background: colors.red,
   },
   gray: {
     color: colors.textDefault,

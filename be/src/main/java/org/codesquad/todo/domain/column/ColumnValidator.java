@@ -10,7 +10,7 @@ public class ColumnValidator {
 		this.columnRepository = columnRepository;
 	}
 
-	public Boolean isExist(Long columnId) {
-		return columnRepository.isExist(columnId);
+	public Boolean exist(Long columnId) {
+		return columnRepository.exist(columnId);
 	}
 }

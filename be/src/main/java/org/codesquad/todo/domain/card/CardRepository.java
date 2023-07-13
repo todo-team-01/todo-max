@@ -1,5 +1,6 @@
 package org.codesquad.todo.domain.card;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,14 +27,14 @@ public class CardRepository {
 	}
 
 	public Card save(Card card) {
-		String sql = "INSERT INTO card(title, content, column_id, member_id) VALUES(:title, :content, :columnId, :memberId)";
+		String sql = "INSERT INTO card(title, content, column_id, member_id, prev_card_id) VALUES(:title, :content, :columnId, :memberId, :prevCardId)";
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		SqlParameterSource parameters = new BeanPropertySqlParameterSource(card);
 		jdbcTemplate.update(sql, parameters, keyHolder);
 		return card.createInstanceWithId(keyHolder.getKey().longValue());
 	}
 
-	public Boolean isExist(Long id) {
+	public Boolean exist(Long id) {
 		String sql = "SELECT EXISTS(SELECT 1 FROM card WHERE id = :id)";
 		return jdbcTemplate.queryForObject(sql, Map.of("id", id), Boolean.class);
 	}
@@ -42,6 +43,11 @@ public class CardRepository {
 		String sql = "SELECT id, title, content, column_id, member_id, prev_card_id FROM card WHERE id = :id";
 		return Optional.ofNullable(
 			DataAccessUtils.singleResult(jdbcTemplate.query(sql, Map.of("id", id), CARD_ROW_MAPPER)));
+	}
+
+	public List<Card> findAllByColumnId(Long columnId) {
+		String sql = "SELECT id, title, content, column_id, member_id, prev_card_id FROM card WHERE column_id = :columnId";
+		return jdbcTemplate.query(sql, Map.of("columnId", columnId), CARD_ROW_MAPPER);
 	}
 
 	public int update(Card card) {
@@ -65,4 +71,3 @@ public class CardRepository {
 			rs.getLong("column_id"), rs.getLong("member_id"), prevCardId == 0 ? null : prevCardId);
 	};
 }
-

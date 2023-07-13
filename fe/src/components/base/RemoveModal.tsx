@@ -1,3 +1,5 @@
+import { dropShadow, radius } from "@constants/objectStyle";
+import { css } from "@emotion/react";
 import { useEffect, useRef } from "react";
 import { Button } from "./Button";
 
@@ -27,15 +29,18 @@ export const RemoveModal = ({
 
   return (
     <dialog
-      css={{
-        width: "320px",
-        height: "126px",
-        padding: "24px",
-        boxSizing: "border-box",
-        "&::backdrop": {
-          background: "rgba(0, 0, 0, 0.3)",
-        },
-      }}
+      css={css`
+        width: 320px;
+        height: 126px;
+        padding: 24px;
+        box-sizing: border-box;
+        border: none;
+        &::backdrop {
+          background: rgba(0, 0, 0, 0.3);
+        }
+        ${radius.radius8}
+        ${dropShadow.up}
+      `}
       ref={modalRef}
       onClose={handleClickClose}
     >

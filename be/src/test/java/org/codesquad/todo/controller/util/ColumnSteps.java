@@ -9,9 +9,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
-public class ColumnFixture {
+public class ColumnSteps {
+	public static final String 해야할_일_컬럼_이름 = "해야할 일";
+	public static final String 하고_있는_일_컬럼_이름 = "하고 있는 일";
+	public static final String 완료한_일_컬럼_이름 = "완료한 일";
 
-	public static ExtractableResponse<Response> 컬럼_생성_요청(ColumnSaveRequestDTO columnSaveRequestDTO) {
+	public static ExtractableResponse<Response> 칼럼_생성_요청(ColumnSaveRequestDTO columnSaveRequestDTO) {
 		return RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
@@ -21,7 +24,7 @@ public class ColumnFixture {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> 컬럼_카드_전체_조회_요청() {
+	public static ExtractableResponse<Response> 칼럼_카드_전체_조회_요청() {
 		return RestAssured.given().log().all()
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when().get("/columns")
@@ -29,7 +32,7 @@ public class ColumnFixture {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> 컬럼_수정_요청(ColumnUpdateRequestDTO columnUpdateRequestDTO, Long id) {
+	public static ExtractableResponse<Response> 칼럼_수정_요청(ColumnUpdateRequestDTO columnUpdateRequestDTO, Long id) {
 		return RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
@@ -39,7 +42,7 @@ public class ColumnFixture {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> 컬럼_삭제_요청(Long id) {
+	public static ExtractableResponse<Response> 칼럼_삭제_요청(Long id) {
 		return RestAssured.given().log().all()
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when().delete("/columns/{id}", id)
@@ -47,11 +50,11 @@ public class ColumnFixture {
 			.extract();
 	}
 
-	public static ColumnSaveResponseDTO 컬럼_생성(ColumnSaveRequestDTO columnSaveRequestDTO) {
-		return 컬럼_변환(컬럼_생성_요청(columnSaveRequestDTO));
+	public static ColumnSaveResponseDTO 칼럼_생성(String name) {
+		return 칼럼_변환(칼럼_생성_요청(new ColumnSaveRequestDTO(name)));
 	}
 
-	private static ColumnSaveResponseDTO 컬럼_변환(ExtractableResponse<Response> response) {
+	private static ColumnSaveResponseDTO 칼럼_변환(ExtractableResponse<Response> response) {
 		return response.as(ColumnSaveResponseDTO.class);
 	}
 }

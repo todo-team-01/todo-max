@@ -22,7 +22,7 @@ public class Card {
 	}
 
 	public Card createInstanceWithPrevId(Long prevCardId) {
-		return new Card(this.id, this.title, this.content, this.columnId, this.memberId, this.prevCardId);
+		return new Card(this.id, this.title, this.content, this.columnId, this.memberId, prevCardId);
 	}
 
 	public Card createInstanceWithTitleAndContent(String title, String content) {

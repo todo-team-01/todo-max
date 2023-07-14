@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CardReader {
+
 	private final CardRepository cardRepository;
 
 	public CardReader(CardRepository cardRepository) {
@@ -21,4 +22,9 @@ public class CardReader {
 	public List<Card> findAllByColumnId(Long columnId) {
 		return cardRepository.findAllByColumnId(columnId);
 	}
+
+	public List<Card> findWithChildById(Long cardId) {
+		return cardRepository.findWithChildById(cardId);
+	}
+
 }

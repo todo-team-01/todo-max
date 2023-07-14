@@ -97,8 +97,10 @@ export const History = ({ closeHandler }: { closeHandler: () => void }) => {
       </div>
       <div>
         {historyData.length ? (
-          historyData.map((data: HistoryData, i) => (
-            <div key={i}>{createHighlightElement(data.historyContent)}</div>
+          historyData.map((data: HistoryData) => (
+            <div key={data.historyId}>
+              {createHighlightElement(data.historyContent)}
+            </div>
           ))
         ) : (
           <div css={{ padding: "16px", textAlign: "center" }}>

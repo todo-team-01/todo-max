@@ -26,11 +26,15 @@ public class ColumnWithCard {
 			return Collections.emptyList();
 		}
 
+		Map<Long, Card> prevIdCardMap = cards.stream()
+			.collect(Collectors.toMap(Card::getPrevCardId, Function.identity()));
+		return createSortCards(cards, prevIdCardMap);
+	}
+
+	private List<Card> createSortCards(List<Card> cards, Map<Long, Card> prevIdCardMap) {
 		List<Card> result = new ArrayList<>();
 		Card currentCard = getRootCard(cards);
 		result.add(currentCard);
-		Map<Long, Card> prevIdCardMap = cards.stream()
-			.collect(Collectors.toMap(Card::getPrevCardId, Function.identity()));
 
 		while (result.size() < cards.size()) {
 			currentCard = prevIdCardMap.get(currentCard.getId());
@@ -55,7 +59,7 @@ public class ColumnWithCard {
 		return columnName;
 	}
 
-	public List<Card> getCards() {
+	public List<Card> createSortCards() {
 		return cards;
 	}
 }

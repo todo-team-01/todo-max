@@ -62,7 +62,7 @@ public class ColumnServiceTest {
 		// then
 		Assertions.assertThat(columnWithCards.size()).isEqualTo(3);
 		Assertions.assertThat(columnWithCards.stream()
-				.map(c -> c.getCards().size())
+				.map(c -> c.createSortCards().size())
 				.collect(Collectors.toUnmodifiableList()))
 			.isEqualTo(List.of(3, 3, 0));
 	}

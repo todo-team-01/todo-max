@@ -27,7 +27,7 @@ public class ColumnCardResponseDTO {
 
 	public static ColumnCardResponseDTO from(ColumnWithCard columnWithCards) {
 		return new ColumnCardResponseDTO(columnWithCards.getColumnId(), columnWithCards.getColumnName(),
-			CardResponseDTO.from(columnWithCards.getCards()));
+			CardResponseDTO.from(columnWithCards.createSortCards()));
 	}
 
 	public Long getColumnId() {

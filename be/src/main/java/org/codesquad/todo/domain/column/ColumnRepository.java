@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.sql.DataSource;
-
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -19,8 +18,8 @@ import org.springframework.stereotype.Repository;
 public class ColumnRepository {
 	private final NamedParameterJdbcTemplate jdbcTemplate;
 
-	public ColumnRepository(DataSource dataSource) {
-		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+	public ColumnRepository(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
 	}
 
 	public Column save(Column column) {

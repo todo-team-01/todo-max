@@ -4,14 +4,13 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.codesquad.todo.util.DatabaseCleaner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @JdbcTest
 public class ColumnRepositoryTest {
@@ -22,9 +21,9 @@ public class ColumnRepositoryTest {
 	private Column 완료한_일;
 
 	@Autowired
-	public ColumnRepositoryTest(DataSource dataSource) {
-		this.columnRepository = new ColumnRepository(dataSource);
-		this.databaseCleaner = new DatabaseCleaner(dataSource);
+	public ColumnRepositoryTest(JdbcTemplate jdbcTemplate) {
+		this.columnRepository = new ColumnRepository(jdbcTemplate);
+		this.databaseCleaner = new DatabaseCleaner(jdbcTemplate);
 	}
 
 	@BeforeEach

@@ -29,4 +29,11 @@ public class CardSteps {
 			.then().log().all()
 			.extract();
 	}
+
+	public static ExtractableResponse<Response> 카드_삭제_요청(Long id) {
+		return RestAssured.given().log().all()
+			.when().delete("/cards/{id}", id)
+			.then().log().all()
+			.extract();
+	}
 }

@@ -32,7 +32,7 @@ public class ColumnSteps {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> 칼럼_수정_요청(ColumnUpdateRequestDTO columnUpdateRequestDTO, Long id) {
+	public static ExtractableResponse<Response> 칼럼_수정_요청(Long id, ColumnUpdateRequestDTO columnUpdateRequestDTO) {
 		return RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
@@ -48,10 +48,6 @@ public class ColumnSteps {
 			.when().delete("/columns/{id}", id)
 			.then().log().all()
 			.extract();
-	}
-
-	public static ColumnSaveResponseDTO 칼럼_생성(String name) {
-		return 칼럼_변환(칼럼_생성_요청(new ColumnSaveRequestDTO(name)));
 	}
 
 	private static ColumnSaveResponseDTO 칼럼_변환(ExtractableResponse<Response> response) {

@@ -1,5 +1,5 @@
-import { Card, CardData } from "@components/Card";
-import { NewCard } from "@components/NewCard";
+import { Card, CardData } from "@components/Card/Card";
+import { NewCard } from "@components/Card/NewCard";
 import { useState } from "react";
 import { ColumnHeader } from "./ColumnHeader";
 
@@ -43,7 +43,6 @@ export const Column = ({
           key={`${index}_${cardData.cardId}`}
           cardData={cardData}
           onCardChanged={onCardChanged}
-          onMouseDown={() => {}}
         />
       ))}
     </div>

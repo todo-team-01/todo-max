@@ -1,6 +1,6 @@
 import { COLOR_VARIANTS } from "@constants/colors";
 import { useState } from "react";
-import { History } from "./ActionHistoryList/History";
+import { History } from "./History";
 import { Button } from "./base/Button";
 import { HistoryIcon } from "./icon/HistoryIcon";
 

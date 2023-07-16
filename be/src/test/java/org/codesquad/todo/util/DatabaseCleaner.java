@@ -5,24 +5,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+@Component
 public class DatabaseCleaner {
 
 	private JdbcTemplate jdbcTemplate;
 	private List<String> tableNames;
 
-	public DatabaseCleaner(DataSource dataSource) {
-		init(dataSource);
+	@Autowired
+	public DatabaseCleaner(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+		init();
 	}
 
-	private void init(DataSource dataSource) {
+	private void init() {
 		try {
 			tableNames = new ArrayList<>();
-			jdbcTemplate = new JdbcTemplate(dataSource);
-			ResultSet resultSet = dataSource.getConnection()
+			ResultSet resultSet = jdbcTemplate.getDataSource().getConnection()
 				.getMetaData()
 				.getTables(null, "PUBLIC", null, new String[] {"TABLE"});
 
@@ -34,13 +37,18 @@ public class DatabaseCleaner {
 		}
 	}
 
+	@Transactional
 	public void execute() {
 		jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
 		tableNames.forEach(name -> {
 			jdbcTemplate.execute(String.format("TRUNCATE TABLE %s", name));
 			jdbcTemplate.execute(String.format("ALTER TABLE %s ALTER COLUMN ID RESTART WITH 1", name));
 		});
-
 		jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
+	}
+
+	@Transactional
+	public void execute(String sql) {
+		jdbcTemplate.execute(sql);
 	}
 }

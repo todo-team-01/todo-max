@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.sql.DataSource;
-
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,8 +23,8 @@ public class CardRepository {
 	public static final String DELETE_CARD_SQL = "DELETE FROM card WHERE id = :id";
 	public static final String CARD_ID_COLUMN = "id";
 
-	public CardRepository(DataSource dataSource) {
-		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+	public CardRepository(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
 	}
 
 	public Card save(Card card) {

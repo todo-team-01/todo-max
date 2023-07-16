@@ -22,7 +22,7 @@ public class ColumnWithCardTest {
 		ColumnWithCard columnWithCard = new ColumnWithCard(1L, "오늘 해야 할일", cards);
 
 		// when
-		List<Card> actual = columnWithCard.getCards();
+		List<Card> actual = columnWithCard.createSortCards();
 
 		// then
 		assertThat(actual.stream()

@@ -4,14 +4,13 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.codesquad.todo.util.DatabaseCleaner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @JdbcTest
 public class CardRepositoryTest {
@@ -21,9 +20,9 @@ public class CardRepositoryTest {
 	private Card FIRST_CARD;
 
 	@Autowired
-	public CardRepositoryTest(DataSource dataSource) {
-		this.cardRepository = new CardRepository(dataSource);
-		this.databaseCleaner = new DatabaseCleaner(dataSource);
+	public CardRepositoryTest(JdbcTemplate jdbcTemplate) {
+		this.cardRepository = new CardRepository(jdbcTemplate);
+		this.databaseCleaner = new DatabaseCleaner(jdbcTemplate);
 	}
 
 	@BeforeEach

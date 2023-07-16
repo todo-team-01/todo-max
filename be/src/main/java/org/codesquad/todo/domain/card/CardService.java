@@ -3,8 +3,10 @@ package org.codesquad.todo.domain.card;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CardService {
 	private final CardAppender cardAppender;
 	private final CardRemover cardRemover;

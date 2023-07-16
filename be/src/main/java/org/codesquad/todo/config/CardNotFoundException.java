@@ -6,6 +6,6 @@ public class CardNotFoundException extends ApiException {
 	public static final String MESSAGE = "카드를 찾을 수 없습니다.";
 
 	public CardNotFoundException() {
-		super(HttpStatus.NOT_FOUND, MESSAGE);
+		super(HttpStatus.BAD_REQUEST, MESSAGE);
 	}
 }

@@ -8,7 +8,7 @@ import { CardData } from "./Card";
 
 interface CardEditorProps {
   cardData?: CardData;
-  addCardData?: {
+  newCardInfo?: {
     columnId: number;
     nextCardId: number;
   };
@@ -19,7 +19,7 @@ interface CardEditorProps {
 
 export const CardEditor = ({
   cardData,
-  addCardData,
+  newCardInfo,
   type,
   onCancel,
   onSubmit,
@@ -32,10 +32,10 @@ export const CardEditor = ({
     url: "/api/cards",
     method: "post",
     body: {
-      columnId: addCardData?.columnId,
+      columnId: newCardInfo?.columnId,
       cardTitle: title,
       cardContent: content,
-      nextCardId: addCardData?.nextCardId,
+      nextCardId: newCardInfo?.nextCardId,
     },
   });
 
@@ -58,21 +58,17 @@ export const CardEditor = ({
 
   const handleClickCancel = () => {
     onCancel();
-    if (type === "edit") {
-      setTitle(cardData?.title || "");
-      setContent(cardData?.content || "");
-    } else {
-      setTitle("");
-      setContent("");
-    }
+    setTitle(cardData?.title || "");
+    setContent(cardData?.content || "");
   };
 
   const handleClickSubmit = async () => {
-    if (type === "add") {
-      await fetchAdd();
-    } else {
-      await fetchUpdate();
-    }
+    const fetchType = {
+      add: fetchAdd,
+      edit: fetchUpdate,
+    };
+
+    await fetchType[type]();
     onSubmit();
   };
 

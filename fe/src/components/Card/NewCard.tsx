@@ -25,7 +25,7 @@ export const NewCard = ({
         type="add"
         onCancel={onAddCancelClick}
         onSubmit={onSubmit}
-        addCardData={{ columnId, nextCardId }}
+        newCardInfo={{ columnId, nextCardId }}
       />
     </div>
   );

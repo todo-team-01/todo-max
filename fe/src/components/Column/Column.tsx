@@ -23,7 +23,7 @@ export const Column = ({
   const prevFirstCardId = cards[0]?.cardId;
 
   return (
-    <div>
+    <div css={{ display: "flex", flexDirection: "column", gap: "10px" }}>
       <ColumnHeader
         columnId={columnId}
         columnName={columnName}

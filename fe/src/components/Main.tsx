@@ -22,7 +22,7 @@ export const Main = () => {
   // if (errorMsg) return <div>{errorMsg}</div>;
 
   return (
-    <div css={{ display: "flex" }}>
+    <div css={{ display: "flex", gap: "24px" }}>
       {columnList &&
         columnList.map(({ columnId, columnName, cards }) => (
           <Column

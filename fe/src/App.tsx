@@ -3,7 +3,7 @@ import { Main } from "@components/Main";
 
 export function App() {
   return (
-    <div>
+    <div css={{ padding: "0 80px" }}>
       <Header />
       <Main />
     </div>

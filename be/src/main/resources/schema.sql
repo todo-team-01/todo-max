@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS history;
 CREATE TABLE IF NOT EXISTS columns (
    id      bigint          NOT NULL auto_increment,
    name    varchar(50)     NOT NULL,
-    PRIMARY KEY(id)
+   PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS card (
@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS card (
     );
 
 CREATE TABLE IF NOT EXISTS history (
-                                       id        bigint      NOT NULL auto_increment,
-                                       content      varchar(500) NOT NULL,
-    create_at datetime    NOT NULL,
+    id        bigint      NOT NULL auto_increment,
+    content      varchar(500) NOT NULL,
+    created_at datetime    NOT NULL,
     is_deleted boolean NOT NULL,
     PRIMARY KEY(id)
     );

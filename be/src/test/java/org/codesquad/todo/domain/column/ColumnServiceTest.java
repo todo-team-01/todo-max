@@ -6,9 +6,9 @@ import static org.mockito.BDDMockito.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.codesquad.todo.domain.card.Card;
 import org.codesquad.todo.domain.card.CardReader;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,11 +60,13 @@ public class ColumnServiceTest {
 		List<ColumnWithCard> columnWithCards = columnService.findAll();
 
 		// then
-		Assertions.assertThat(columnWithCards.size()).isEqualTo(3);
-		Assertions.assertThat(columnWithCards.stream()
+		Assertions.assertAll(
+			() -> assertThat(columnWithCards.size()).isEqualTo(3),
+			() -> assertThat(columnWithCards.stream()
 				.map(c -> c.getCards().size())
 				.collect(Collectors.toUnmodifiableList()))
-			.isEqualTo(List.of(3, 3, 0));
+				.isEqualTo(List.of(3, 3, 0))
+		);
 	}
 
 	@DisplayName("Column을 삭제한다.")

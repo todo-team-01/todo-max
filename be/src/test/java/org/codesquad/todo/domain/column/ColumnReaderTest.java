@@ -66,8 +66,10 @@ class ColumnReaderTest {
 		List<Column> actual = columnReader.findAll();
 
 		// then
-		assertThat(actual.size()).isEqualTo(3L);
-		assertThat(actual).usingRecursiveComparison()
-			.isEqualTo(columns);
+		Assertions.assertAll(
+			() -> assertThat(actual.size()).isEqualTo(3L),
+			() -> assertThat(actual).usingRecursiveComparison()
+				.isEqualTo(columns)
+		);
 	}
 }

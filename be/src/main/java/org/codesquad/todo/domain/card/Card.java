@@ -5,28 +5,22 @@ public class Card {
 	private final String title;
 	private final String content;
 	private final Long columnId;
-	private final Long memberId;
-	private final Long prevCardId;
+	private final Long position;
 
-	public Card(Long id, String title, String content, Long columnId, Long memberId, Long prevCardId) {
+	public Card(Long id, String title, String content, Long columnId, Long position) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
 		this.columnId = columnId;
-		this.memberId = memberId;
-		this.prevCardId = prevCardId;
+		this.position = position;
 	}
 
 	public Card createInstanceWithId(Long id) {
-		return new Card(id, this.title, this.content, this.columnId, this.memberId, this.prevCardId);
-	}
-
-	public Card createInstanceWithPrevId(Long prevCardId) {
-		return new Card(this.id, this.title, this.content, this.columnId, this.memberId, prevCardId);
+		return new Card(id, this.title, this.content, this.columnId, this.position);
 	}
 
 	public Card createInstanceWithTitleAndContent(String title, String content) {
-		return new Card(this.id, title, content, this.columnId, this.memberId, this.prevCardId);
+		return new Card(this.id, title, content, this.columnId, this.position);
 	}
 
 	public Long getId() {
@@ -45,11 +39,7 @@ public class Card {
 		return columnId;
 	}
 
-	public Long getMemberId() {
-		return memberId;
-	}
-
-	public Long getPrevCardId() {
-		return prevCardId;
+	public Long getPosition() {
+		return position;
 	}
 }

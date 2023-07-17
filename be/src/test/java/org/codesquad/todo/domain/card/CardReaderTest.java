@@ -29,7 +29,7 @@ class CardReaderTest {
 	void findById() {
 		// given
 		Long id = 1L;
-		Card card = new Card(id, "title", "content", 1L, 1L, null);
+		Card card = new Card(id, "title", "content", 1L, 1024L);
 
 		given(cardRepository.findById(any())).willReturn(Optional.of(card));
 
@@ -58,9 +58,9 @@ class CardReaderTest {
 	void findAllByColumnId() {
 		// given
 		List<Card> cards = List.of(
-			new Card(1L, "title1", "content1", 1L, 1L, null),
-			new Card(2L, "title2", "content2", 1L, 1L, null),
-			new Card(3L, "title3", "content3", 1L, 1L, null));
+			new Card(1L, "title1", "content1", 1L, 1024L),
+			new Card(2L, "title2", "content2", 1L, 2048L),
+			new Card(3L, "title3", "content3", 1L, 3072L));
 		given(cardRepository.findAllByColumnId(any())).willReturn(cards);
 
 		// when

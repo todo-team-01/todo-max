@@ -18,9 +18,6 @@ public abstract class AcceptanceTest {
 	private int port;
 
 	@Autowired
-	private DataSource dataSource;
-
-	@Autowired
 	private DatabaseCleaner databaseCleaner;
 
 	@BeforeEach
@@ -28,6 +25,5 @@ public abstract class AcceptanceTest {
 	void setUp() {
 		RestAssured.port = port;
 		databaseCleaner.execute();
-		databaseCleaner.execute("INSERT INTO member(name, profile_image_url) VALUES ('왕만두', 'test')");
 	}
 }

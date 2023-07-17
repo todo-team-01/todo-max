@@ -26,12 +26,12 @@ public class CardAppenderTest {
 	@Test
 	void append() {
 		// given
-		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
+		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1024L);
 		willDoNothing().given(cardValidator).verifyCard(any());
-		given(cardRepository.save(any())).willReturn(card.createInstanceWithId(1L));
+		given(cardRepository.save(any())).willReturn(1L);
 
 		// when
-		Long savedId = cardAppender.append(card).getId();
+		Long savedId = cardAppender.append(card);
 
 		// then
 		assertThat(savedId).isEqualTo(1L);

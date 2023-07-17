@@ -74,7 +74,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 	@Test
 	void deleteCard() {
 		// given
-		카드를_생성한다();
+		칼럼과_카드를_생성한다();
 
 		// when
 		var response = 카드_삭제_요청(1L);
@@ -89,7 +89,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 	}
 
 	private ExtractableResponse<Response> 카드를_생성한다() {
-		CardSaveRequestDto cardSaveRequestDto = new CardSaveRequestDto(1L, "Git 공부하기", "stash", null);
+		CardSaveRequestDto cardSaveRequestDto = new CardSaveRequestDto(1L, "Git 공부하기", "stash");
 		return 카드_생성_요청(cardSaveRequestDto);
 	}
 
@@ -105,9 +105,6 @@ public class CardAcceptanceTest extends AcceptanceTest {
 
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		assertThat(responseBody.getCardId()).isEqualTo(1L);
-		assertThat(responseBody.getColumnId()).isEqualTo(1L);
-		assertThat(responseBody.getCardTitle()).isEqualTo("Git 공부하기");
-		assertThat(responseBody.getCardContent()).isEqualTo("stash");
 	}
 
 	private void 칼럼과_카드를_생성한다() {

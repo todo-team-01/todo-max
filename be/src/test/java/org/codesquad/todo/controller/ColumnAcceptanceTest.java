@@ -125,8 +125,10 @@ public class ColumnAcceptanceTest extends AcceptanceTest {
 	private void 칼럼_아이디가_존재하지_않아서_실패한_요청을_검증한다(ExtractableResponse<Response> response) {
 		String message = response.jsonPath().getString("message");
 
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(message).isEqualTo(ColumnNotFoundException.MESSAGE);
+		Assertions.assertAll(
+			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+			() -> assertThat(message).isEqualTo(ColumnNotFoundException.MESSAGE)
+		);
 	}
 
 	private void 삭제된_칼럼을_검증한다(ExtractableResponse<Response> response) {

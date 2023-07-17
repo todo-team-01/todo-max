@@ -67,8 +67,10 @@ class CardReaderTest {
 		List<Card> actual = cardReader.findAllByColumnId(1L);
 
 		// then
-		assertThat(actual.size()).isEqualTo(3L);
-		assertThat(actual).usingRecursiveComparison()
-			.isEqualTo(cards);
+		Assertions.assertAll(
+			() -> assertThat(actual.size()).isEqualTo(3L),
+			() -> assertThat(actual).usingRecursiveComparison()
+				.isEqualTo(cards)
+		);
 	}
 }

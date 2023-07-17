@@ -3,6 +3,7 @@ package org.codesquad.todo.domain.column;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,9 +30,11 @@ class ColumnAppenderTest {
 		Column actual = columnAppender.append(column);
 
 		// then
-		assertThat(actual.getId()).isEqualTo(1L);
-		assertThat(actual).usingRecursiveComparison()
-			.ignoringFields("id")
-			.isEqualTo(column);
+		Assertions.assertAll(
+			() -> assertThat(actual.getId()).isEqualTo(1L),
+			() -> assertThat(actual).usingRecursiveComparison()
+				.ignoringFields("id")
+				.isEqualTo(column)
+		);
 	}
 }

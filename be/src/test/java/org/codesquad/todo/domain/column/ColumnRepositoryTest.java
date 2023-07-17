@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 
 import org.codesquad.todo.util.DatabaseCleaner;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,8 +57,10 @@ public class ColumnRepositoryTest {
 		Column savedColumn = columnRepository.save(새로운_일);
 
 		// then
-		assertThat(savedColumn.getId()).isEqualTo(4L);
-		assertThat(savedColumn.getName()).isEqualTo(새로운_일.getName());
+		Assertions.assertAll(
+			() -> assertThat(savedColumn.getId()).isEqualTo(4L),
+			() -> assertThat(savedColumn.getName()).isEqualTo(새로운_일.getName())
+		);
 	}
 
 	@DisplayName("DB에 칼럼을 저장하고 저장한 칼럼이 있는지 확인한다.")

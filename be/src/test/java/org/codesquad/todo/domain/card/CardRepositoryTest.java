@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 
 import org.codesquad.todo.util.DatabaseCleaner;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,11 +54,13 @@ public class CardRepositoryTest {
 			.orElseThrow();
 
 		// then
-		assertThat(actual.getId()).isEqualTo(1L);
-		assertThat(actual.getPosition()).isEqualTo(1024L);
-		assertThat(actual).usingRecursiveComparison()
-			.ignoringFields("id", "position")
-			.isEqualTo(card);
+		Assertions.assertAll(
+			() -> assertThat(actual.getId()).isEqualTo(1L),
+			() -> assertThat(actual.getPosition()).isEqualTo(1024L),
+			() -> assertThat(actual).usingRecursiveComparison()
+				.ignoringFields("id", "position")
+				.isEqualTo(card)
+		);
 	}
 
 	@DisplayName("카드 전체를 조회할 때 컬럼 아이디를 입력하면 해당 컬럼 아이디를 가지고 있는 카드들을 반환한다.")
@@ -88,8 +91,12 @@ public class CardRepositoryTest {
 
 		//then
 		Card findCard = cardRepository.findById(savedId).orElseThrow();
-		assertThat(updatedCount).isEqualTo(1L);
-		assertThat(findCard).usingRecursiveComparison()
-			.isEqualTo(updateCard);
+
+		Assertions.assertAll(
+			() -> assertThat(updatedCount).isEqualTo(1L),
+			() -> assertThat(findCard).usingRecursiveComparison()
+				.isEqualTo(updateCard)
+		);
+
 	}
 }

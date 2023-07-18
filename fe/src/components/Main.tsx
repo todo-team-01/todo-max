@@ -1,35 +1,19 @@
-import { COLOR_VARIANTS } from "@constants/colors";
 import { css } from "@emotion/react";
 import { useFetch } from "hooks/useFetch";
 import { useEffect, useState } from "react";
 import Column from "./Column";
-import { Button } from "./base/Button";
-import { PlusIcon } from "./icon/PlusIcon";
+import { FAB } from "./FAB";
 
 export const Main = () => {
   const [columnList, setColumnList] = useState([]);
-  const columnCount = columnList.length;
-
   const { response, errorMsg, loading, fetch } = useFetch({
     url: "/api",
     method: "get",
     autoFetch: true,
   });
-  const { fetch: columnAddFetch } = useFetch({
-    url: "/api/columns",
-    method: "post",
-    body: {
-      columnName: `새로운 컬럼 ${columnCount + 1}`,
-    },
-  });
 
   const onCardChanged = async () => {
     await fetch();
-  };
-
-  const onColumnAdd = async () => {
-    await columnAddFetch();
-    onCardChanged();
   };
 
   useEffect(() => {
@@ -48,14 +32,7 @@ export const Main = () => {
             onCardChanged={onCardChanged}
           />
         ))}
-      <Button
-        variant="blue"
-        pattern="FAB"
-        onClick={onColumnAdd}
-        css={{ position: "fixed", bottom: "30px", right: "30px" }}
-      >
-        <PlusIcon size={32} rgb={COLOR_VARIANTS.textWhiteDefault} />
-      </Button>
+      <FAB onColumnChanged={onCardChanged} />
     </div>
   );
 };

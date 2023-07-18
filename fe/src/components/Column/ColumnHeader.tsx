@@ -1,3 +1,4 @@
+import { RemoveModal } from "@components/base/RemoveModal";
 import { Text } from "@components/base/Text";
 import { useFetch } from "hooks/useFetch";
 import { useState } from "react";
@@ -20,16 +21,23 @@ export const ColumnHeader = ({
   onAddCardClick,
   onCardChanged,
 }: ColumnHeaderProps) => {
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [status, setStatus] = useState<"viewer" | "editor">("viewer");
+
   const { fetch: deleteColumnFetch } = useFetch({
     url: `/api/columns/${columnId}`,
     method: "delete",
   });
-  const [status, setStatus] = useState<"viewer" | "editor">("viewer");
 
   const onNameDoubleClick = () => setStatus("editor");
   const onNameOutsideClick = () => setStatus("viewer");
+
+  const openModal = () => setIsOpenModal(true);
+  const closeModal = () => setIsOpenModal(false);
+
   const onDeleteColumnClick = async () => {
     await deleteColumnFetch();
+    closeModal();
     onCardChanged();
   };
 
@@ -54,7 +62,13 @@ export const ColumnHeader = ({
       </div>
       <ColumnButtons
         onAddButtonClick={onAddCardClick}
-        onDeleteButtonClick={onDeleteColumnClick}
+        onDeleteButtonClick={openModal}
+      />
+      <RemoveModal
+        isOpen={isOpenModal}
+        removeHandler={onDeleteColumnClick}
+        closeHandler={closeModal}
+        text={`'${columnName}' 칼럼을 삭제할까요?`}
       />
     </div>
   );

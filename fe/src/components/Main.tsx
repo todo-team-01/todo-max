@@ -7,7 +7,7 @@ import { FAB } from "./FAB";
 export const Main = () => {
   const [columnList, setColumnList] = useState([]);
   const { response, errorMsg, loading, fetch } = useFetch({
-    url: "/api",
+    url: "/api/columns",
     method: "get",
     autoFetch: true,
   });

@@ -10,7 +10,7 @@ import { TitleArea } from "./TitleArea";
 export interface HistoryData {
   historyId: number;
   historyContent: string;
-  timeStamp: string;
+  historyCreatedAt: string;
 }
 
 export const ActionHistoryList: React.FC<{ onClose: () => void }> = ({
@@ -20,12 +20,12 @@ export const ActionHistoryList: React.FC<{ onClose: () => void }> = ({
   const [rightPosition, setRightPosition] = useState(RIGHT_POSITION.CLOSE);
 
   const { response: activeHistoryList, fetch: getHistoryFetch } = useFetch({
-    url: "/api/history",
+    url: "/api/histories",
     method: "get",
     autoFetch: true,
   });
   const { fetch: deleteHistoryFetch } = useFetch({
-    url: "/api/history",
+    url: "/api/histories",
     method: "delete",
   });
 

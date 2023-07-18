@@ -14,7 +14,7 @@ export const ListArea: React.FC<{ activeHistoryList: HistoryData[] }> = ({
           <div css={ProfileStyle}></div>
           <div css={actionContentStyle}>
             <ActionText historyText={data.historyContent} />
-            <TimeStamp timeStamp={data.timeStamp} />
+            <TimeStamp historyCreatedAt={data.historyCreatedAt} />
           </div>
         </div>
       ))}

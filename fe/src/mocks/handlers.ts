@@ -68,26 +68,26 @@ let historyData = [
   {
     historyId: 1,
     historyContent: `'블로그에 포스팅할 것'을(를) '하고있는 일'에서 '해야할 일'으로 '이동'하였습니다.`,
-    timeStamp: "2023-07-17 10:00:00",
+    historyCreatedAt: "2023-07-18T20:45:23.019434",
   },
   {
     historyId: 2,
     historyContent: `'블로그에 포스팅할 것'을(를) '하고있는 일'에서 '해야할 일'으로 '이동'하였습니다.`,
-    timeStamp: "2023-07-16 10:00:00",
+    historyCreatedAt: "2023-07-17T20:45:23.019434",
   },
   {
     historyId: 3,
     historyContent: `'블로그에 포스팅할 것'을(를) '하고있는 일'에서 '해야할 일'으로 '이동'하였습니다.`,
-    timeStamp: "2023-07-15 10:00:00",
+    historyCreatedAt: "2023-07-16T20:45:23.019434",
   },
 ];
 
 export const handlers = [
-  rest.get("/api", (_, res, ctx) => {
+  rest.get("/api/columns", (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(columnData));
   }),
 
-  rest.get("/api/history", (req, res, ctx) => {
+  rest.get("/api/histories", (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(historyData));
   }),
 
@@ -102,7 +102,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(columnData));
   }),
 
-  rest.delete("/api/history", (req, res, ctx) => {
+  rest.delete("/api/histories", (req, res, ctx) => {
     historyData = [];
 
     return res(ctx.status(200), ctx.json(historyData));

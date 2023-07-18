@@ -1,10 +1,12 @@
 import { Text } from "@components/base/Text";
 import { COLOR_VARIANTS } from "@constants/colors";
 
-export const TimeStamp: React.FC<{ timeStamp: string }> = ({ timeStamp }) => {
-  const calculateTimeDiff = (timeStamp: string) => {
+export const TimeStamp: React.FC<{ historyCreatedAt: string }> = ({
+  historyCreatedAt,
+}) => {
+  const calculateTimeDiff = (historyCreatedAt: string) => {
     const now = new Date();
-    const generatedAtDate = new Date(timeStamp);
+    const generatedAtDate = new Date(historyCreatedAt);
 
     const diff = now.getTime() - generatedAtDate.getTime();
     const diffInMinutes = Math.floor(diff / 1000 / 60);
@@ -22,7 +24,7 @@ export const TimeStamp: React.FC<{ timeStamp: string }> = ({ timeStamp }) => {
 
   return (
     <Text typography="displayMedium12" css={{ color: COLOR_VARIANTS.textWeak }}>
-      {calculateTimeDiff(timeStamp)}
+      {calculateTimeDiff(historyCreatedAt)}
     </Text>
   );
 };

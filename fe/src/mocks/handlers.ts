@@ -138,6 +138,23 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(columnData));
   }),
 
+  rest.put("/api/columns/:id", (req, res, ctx) => {
+    const { id } = req.params;
+    const { changedColumnName } = req.body as { changedColumnName: string };
+
+    columnData = columnData.map((column) => {
+      if (column.columnId === Number(id)) {
+        return {
+          ...column,
+          columnName: changedColumnName,
+        };
+      }
+      return column;
+    });
+
+    return res(ctx.status(200), ctx.json(columnData));
+  }),
+
   rest.post("/api/cards", async (req, res, ctx) => {
     const { columnId, cardTitle, cardContent } =
       await req.json<CardAddRequestBody>();

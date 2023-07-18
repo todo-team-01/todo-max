@@ -17,7 +17,7 @@ export const Column = ({
   onCardChanged,
 }: ColumnDataProps) => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
-  const handleClickAddCard = () => setIsAdding((prev) => !prev);
+  const onAddCardClick = () => setIsAdding((prev) => !prev);
   const onAddCancelClick = () => setIsAdding(false);
   const cardCount = cards.length;
 
@@ -27,7 +27,7 @@ export const Column = ({
         columnId={columnId}
         columnName={columnName}
         cardCount={cardCount}
-        handleClickAddCard={handleClickAddCard}
+        onAddCardClick={onAddCardClick}
         onCardChanged={onCardChanged}
       />
       {isAdding && (

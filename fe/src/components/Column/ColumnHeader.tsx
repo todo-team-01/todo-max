@@ -1,16 +1,15 @@
-import { Button } from "@components/base/Button";
 import { Text } from "@components/base/Text";
-import { ClosedIcon } from "@components/icon/ClosedIcon";
-import { PlusIcon } from "@components/icon/PlusIcon";
-import { COLOR_VARIANTS } from "@constants/colors";
 import { useFetch } from "hooks/useFetch";
+import { useState } from "react";
 import { Badge } from "./Badge";
+import { ColumnButtons } from "./ColumnButtons";
+import { NameEditor } from "./NameEditor";
 
 interface ColumnHeaderProps {
   columnId: number;
   columnName: string;
   cardCount: number;
-  handleClickAddCard: () => void;
+  onAddCardClick: () => void;
   onCardChanged: () => void;
 }
 
@@ -18,48 +17,55 @@ export const ColumnHeader = ({
   columnId,
   columnName,
   cardCount,
-  handleClickAddCard,
+  onAddCardClick,
   onCardChanged,
 }: ColumnHeaderProps) => {
   const { fetch: deleteColumnFetch } = useFetch({
     url: `/api/columns/${columnId}`,
     method: "delete",
   });
-  const handleClickRemoveColumn = () => {
-    deleteColumnFetch();
+  const [status, setStatus] = useState<"viewer" | "editor">("viewer");
+
+  const onNameDoubleClick = () => setStatus("editor");
+  const onNameOutsideClick = () => setStatus("viewer");
+  const onDeleteColumnClick = async () => {
+    await deleteColumnFetch();
     onCardChanged();
   };
 
   return (
-    <div
-      css={{
-        display: "flex",
-        justifyContent: "space-between",
-        minWidth: "300px",
-      }}
-    >
-      <div css={{ display: "flex", gap: "4px", alignItems: "center" }}>
-        <Text typography="displayBold16" color="textBold">
-          {columnName}
-        </Text>
-        <Badge cardCount={cardCount} />
+    <div css={headerStyle}>
+      <div css={titleStyle} onDoubleClick={onNameDoubleClick}>
+        {status === "viewer" ? (
+          <>
+            <Text typography="displayBold16" color="textBold">
+              {columnName}
+            </Text>
+            <Badge cardCount={cardCount} />
+          </>
+        ) : (
+          <NameEditor
+            columnId={columnId}
+            columnName={columnName}
+            onNameOutsideClick={onNameOutsideClick}
+            onCardChanged={onCardChanged}
+          />
+        )}
       </div>
-      <div css={{ display: "flex" }}>
-        <Button
-          pattern="icon"
-          onClick={handleClickAddCard}
-          iconHoverColor="surfaceBrand"
-        >
-          <PlusIcon size={24} rgb={COLOR_VARIANTS.textWeak} />
-        </Button>
-        <Button
-          pattern="icon"
-          onClick={handleClickRemoveColumn}
-          iconHoverColor="surfaceDanger"
-        >
-          <ClosedIcon size={24} rgb={COLOR_VARIANTS.textWeak} />
-        </Button>
-      </div>
+      <ColumnButtons
+        onAddButtonClick={onAddCardClick}
+        onDeleteButtonClick={onDeleteColumnClick}
+      />
     </div>
   );
 };
+
+const headerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  padding: "0 16px",
+  minWidth: "300px",
+  gap: "4px",
+};
+
+const titleStyle = { display: "flex", gap: "8px", alignItems: "center" };

@@ -22,12 +22,14 @@ class CardManagerTest {
 	@Mock
 	private CardReader cardReader;
 
+	@Mock
+	private CardValidator cardValidator;
+
 	@DisplayName("카드를 수정할 때 수정할 카드 정보들을 입력하면 수정이 되고 수정한 카드들의 수를 반환한다.")
 	@Test
 	void updateCard() {
 		// given
 		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1024L);
-		cardRepository.save(card);
 		given(cardReader.findById(any())).willReturn(card.createInstanceWithId(1L));
 		given(cardRepository.update(any())).willReturn(1);
 
@@ -37,4 +39,58 @@ class CardManagerTest {
 		// then
 		assertThat(updatedCount).isEqualTo(1);
 	}
+
+	@DisplayName("컬럼의 맨 위로 카드를 이동 시 해당 컬럼에서 가장 큰 position 값에 1024를 더한 값을 position으로 갖는다.")
+	@Test
+	void moveCardWithNoTopCard() {
+		// given
+		given(cardReader.findById(2L))
+			.willReturn(new Card(2L, "test3", "content3", 1L, 2048L));
+
+		given(cardRepository.updatePosition(1L, 1L, 3072L)).willReturn(1);
+
+		// when
+		int updated = cardManager.move(1L, 1L, null, 2L);
+
+		// then
+		assertThat(updated).isEqualTo(1);
+	}
+
+	@DisplayName("카드 이동 시 position 값을 업데이트한다.")
+	@Test
+	void moveCard() {
+		// given
+		given(cardReader.findById(2L))
+			.willReturn(new Card(2L, "test2", "content2", 1L, 2048L));
+		given(cardReader.findById(3L))
+			.willReturn(new Card(3L, "test3", "content3", 1L, 3072L));
+
+		given(cardRepository.updatePosition(1L ,1L, 2560L)).willReturn(1);
+
+		// when
+		int updated = cardManager.move(1L, 1L, 3L, 2L);
+
+		// then
+		assertThat(updated).isEqualTo(1);
+	}
+
+	@DisplayName("카드 이동 시 position 간격이 1이하인 경우 해당 컬럼의 모든 포지션 값의 간격을 1024로 초기화한다.")
+	@Test
+	void moveCardWithRefresh() {
+		// given
+		given(cardReader.findById(2L))
+			.willReturn(new Card(2L, "test2", "content2", 1L, 100L));
+		given(cardReader.findById(3L))
+			.willReturn(new Card(3L, "test3", "content3", 1L, 102L));
+
+		given(cardRepository.updatePosition(1L ,1L, 101L)).willReturn(1);
+		given(cardRepository.refreshPositionsByColumnId(1L)).willReturn(3);
+
+		// when
+		int updated = cardManager.move(1L, 1L, 3L, 2L);
+
+		// then
+		assertThat(updated).isEqualTo(3);
+	}
+
 }

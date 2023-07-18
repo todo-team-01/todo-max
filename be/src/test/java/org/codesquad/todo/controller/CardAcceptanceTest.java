@@ -4,12 +4,14 @@ import static org.assertj.core.api.Assertions.*;
 import static org.codesquad.todo.controller.util.CardSteps.*;
 import static org.codesquad.todo.controller.util.ColumnSteps.*;
 import static org.codesquad.todo.controller.util.HistorySteps.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
 import org.codesquad.todo.config.CardNotFoundException;
 import org.codesquad.todo.config.ColumnNotFoundException;
 import org.codesquad.todo.controller.dto.CardModifyRequestDto;
+import org.codesquad.todo.controller.dto.CardMoveRequestDto;
 import org.codesquad.todo.controller.dto.CardSaveRequestDto;
 import org.codesquad.todo.controller.dto.CardSaveResponseDto;
 import org.codesquad.todo.controller.dto.ColumnSaveRequestDTO;
@@ -31,7 +33,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 		칼럼을_생성한다();
 
 		// when
-		var response = 카드를_생성한다();
+		var response = 카드를_생성한다(1L);
 
 		// then
 		생성된_카드를_검증한다(response);
@@ -43,7 +45,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 		// given
 
 		// when
-		var response = 카드를_생성한다();
+		var response = 카드를_생성한다(1L);
 
 		// then
 		칼럼_아이디가_존재하지_않아서_실패한_요청을_검증한다(response);
@@ -87,20 +89,70 @@ public class CardAcceptanceTest extends AcceptanceTest {
 		삭제된_카드를_검증한다(response);
 	}
 
+	@DisplayName("해당하는 ID의 카드를 요청 위치로 이동한다.")
+	@Test
+	void moveCard() {
+		// given
+		칼럼과_카드를_생성한다();
+		칼럼과_카드를_생성한다();
+		카드를_생성한다(2L);
+		카드를_생성한다(1L);
+
+		// when
+		var response = 카드를_이동한다();
+
+		// then
+		이동한_카드를_검증한다(response);
+	}
+
+	@DisplayName("카드 이동할 때 칼럼 아이디가 없는 경우 에러를 반환한다.")
+	@Test
+	void moveCardFailWithNoColumn() {
+		// given
+
+		// when
+		var response = 카드를_이동한다();
+
+		// then
+		칼럼_아이디가_존재하지_않아서_실패한_요청을_검증한다(response);
+	}
+
+	@DisplayName("카드 이동할 때 카드 아이디가 없는 경우 에러를 반환한다.")
+	@Test
+	void moveCardFailWithNoCard() {
+		// given
+		칼럼과_카드를_생성한다();
+
+		// when
+		var response = 카드를_이동한다();
+
+		// then
+		카드_아이디가_존재하지_않아서_실패한_요청을_검증한다(response);
+	}
+
+	private ExtractableResponse<Response> 카드를_이동한다() {
+		CardMoveRequestDto cardMoveRequestDto = new CardMoveRequestDto(1L, 4L, 3L);
+		return 카드_이동_요청(2L, cardMoveRequestDto);
+	}
+
+	private void 이동한_카드를_검증한다(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
 	private void 칼럼을_생성한다() {
 		ColumnSaveRequestDTO columnSaveRequestDTO = new ColumnSaveRequestDTO(해야할_일_컬럼_이름);
 		칼럼_생성_요청(columnSaveRequestDTO);
 	}
 
-	private ExtractableResponse<Response> 카드를_생성한다() {
-		CardSaveRequestDto cardSaveRequestDto = new CardSaveRequestDto(1L, "Git 공부하기", "stash");
+	private ExtractableResponse<Response> 카드를_생성한다(Long columnId) {
+		CardSaveRequestDto cardSaveRequestDto = new CardSaveRequestDto(columnId, "Git 공부하기", "stash");
 		return 카드_생성_요청(cardSaveRequestDto);
 	}
 
 	private void 칼럼_아이디가_존재하지_않아서_실패한_요청을_검증한다(ExtractableResponse<Response> response) {
 		String message = response.jsonPath().getString("message");
 
-		Assertions.assertAll(
+		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
 			() -> assertThat(message).isEqualTo(ColumnNotFoundException.MESSAGE)
 		);
@@ -110,7 +162,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 		CardSaveResponseDto responseBody = response.as(CardSaveResponseDto.class);
 		List<String> contents = 히스토리_전체_조회_요청().jsonPath().getList("historyContent", String.class);
 
-		Assertions.assertAll(
+		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
 			() -> assertThat(responseBody.getCardId()).isEqualTo(1L),
 			() -> assertThat(contents).contains("Git 공부하기을(를) 해야할 일에서 등록하였습니다.")
@@ -119,7 +171,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 
 	private void 칼럼과_카드를_생성한다() {
 		칼럼을_생성한다();
-		카드를_생성한다();
+		카드를_생성한다(1L);
 	}
 
 	private ExtractableResponse<Response> 카드를_수정한다() {
@@ -130,7 +182,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 	private void 수정된_카드를_검증한다(ExtractableResponse<Response> response) {
 		List<String> contents = 히스토리_전체_조회_요청().jsonPath().getList("historyContent", String.class);
 
-		Assertions.assertAll(
+		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
 			() -> assertThat(contents).contains("Git 공부하기22을(를) 변경하였습니다.")
 		);
@@ -138,7 +190,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 
 	private void 카드_아이디가_존재하지_않아서_실패한_요청을_검증한다(ExtractableResponse<Response> response) {
 		String message = response.jsonPath().getString("message");
-		Assertions.assertAll(
+		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
 			() -> assertThat(message).isEqualTo(CardNotFoundException.MESSAGE)
 		);
@@ -147,9 +199,10 @@ public class CardAcceptanceTest extends AcceptanceTest {
 	private void 삭제된_카드를_검증한다(ExtractableResponse<Response> response) {
 		List<String> contents = 히스토리_전체_조회_요청().jsonPath().getList("historyContent", String.class);
 
-		Assertions.assertAll(
+		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
 			() -> assertThat(contents).contains("Git 공부하기을(를)이 삭제 되었습니다.")
 		);
 	}
+
 }

@@ -28,6 +28,7 @@ export const Column = ({
         columnName={columnName}
         cardCount={cardCount}
         handleClickAddCard={handleClickAddCard}
+        onCardChanged={onCardChanged}
       />
       {isAdding && (
         <NewCard

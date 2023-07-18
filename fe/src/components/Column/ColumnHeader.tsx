@@ -3,6 +3,7 @@ import { Text } from "@components/base/Text";
 import { ClosedIcon } from "@components/icon/ClosedIcon";
 import { PlusIcon } from "@components/icon/PlusIcon";
 import { COLOR_VARIANTS } from "@constants/colors";
+import { useFetch } from "hooks/useFetch";
 import { Badge } from "./Badge";
 
 interface ColumnHeaderProps {
@@ -10,6 +11,7 @@ interface ColumnHeaderProps {
   columnName: string;
   cardCount: number;
   handleClickAddCard: () => void;
+  onCardChanged: () => void;
 }
 
 export const ColumnHeader = ({
@@ -17,8 +19,16 @@ export const ColumnHeader = ({
   columnName,
   cardCount,
   handleClickAddCard,
+  onCardChanged,
 }: ColumnHeaderProps) => {
-  const handleClickRemoveColumn = () => {};
+  const { fetch: deleteColumnFetch } = useFetch({
+    url: `/api/columns/${columnId}`,
+    method: "delete",
+  });
+  const handleClickRemoveColumn = () => {
+    deleteColumnFetch();
+    onCardChanged();
+  };
 
   return (
     <div

@@ -9,6 +9,12 @@ interface RequestBodyType {
   changedCardContent: string;
 }
 
+interface MoveCardBodyType {
+  changedColumnId: number;
+  TopCardId: number | null;
+  BottomCardId: number | null;
+}
+
 interface Column {
   columnId: number;
   columnName: string;
@@ -56,6 +62,11 @@ let columnData: Column[] = [
         writer: "web",
       },
     ],
+  },
+  {
+    columnId: 4,
+    columnName: "하기 싫은 일",
+    cards: [],
   },
 ];
 
@@ -108,8 +119,6 @@ export const handlers = [
     const { changedCardTitle, changedCardContent } =
       req.body as RequestBodyType;
 
-    console.log(changedCardContent);
-
     columnData = columnData.map((column) => ({
       ...column,
       cards: column.cards.map((card) => {
@@ -148,5 +157,51 @@ export const handlers = [
     });
 
     return res(ctx.status(200), ctx.json(newCard));
+  }),
+
+  rest.patch("/api/cards/:id", (req, res, ctx) => {
+    const { id } = req.params;
+    const { changedColumnId, TopCardId, BottomCardId } =
+      req.body as MoveCardBodyType;
+    console.log(req.body);
+
+    let movingCard = null;
+    let targetColumn = null;
+
+    columnData.forEach((column) => {
+      const cardIndex = column.cards.findIndex(
+        (card) => card.cardId === Number(id)
+      );
+      if (cardIndex > -1) {
+        movingCard = column.cards[cardIndex];
+        column.cards.splice(cardIndex, 1);
+      }
+      if (column.columnId === changedColumnId) {
+        targetColumn = column;
+      }
+    });
+
+    if (targetColumn && movingCard) {
+      targetColumn = targetColumn as Column;
+      if (TopCardId === null) {
+        targetColumn.cards.unshift(movingCard);
+      } else if (BottomCardId === null) {
+        targetColumn.cards.push(movingCard);
+      } else {
+        const topCardIndex = targetColumn.cards.findIndex(
+          (card) => card.cardId === TopCardId
+        );
+        const bottomCardIndex = targetColumn.cards.findIndex(
+          (card) => card.cardId === BottomCardId
+        );
+        if (topCardIndex < bottomCardIndex) {
+          targetColumn.cards.splice(bottomCardIndex, 0, movingCard);
+        } else {
+          targetColumn.cards.splice(topCardIndex, 0, movingCard);
+        }
+      }
+    }
+
+    return res(ctx.status(200), ctx.json(columnData));
   }),
 ];

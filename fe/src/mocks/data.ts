@@ -1,4 +1,4 @@
-import { CardData } from "@components/Card";
+import { CardData } from "@components/Card/Card";
 import { faker } from "@faker-js/faker";
 
 export function createRandomCard(cardId: number): CardData {

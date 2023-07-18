@@ -62,21 +62,6 @@ let columnData: Column[] = [
       },
     ],
   },
-  {
-    columnId: 4,
-    columnName: "해야 할 일",
-    cards: CARDS,
-  },
-  {
-    columnId: 5,
-    columnName: "해야 할 일",
-    cards: CARDS,
-  },
-  {
-    columnId: 6,
-    columnName: "해야 할 일",
-    cards: CARDS,
-  },
 ];
 
 let historyData = [
@@ -174,5 +159,17 @@ export const handlers = [
     });
 
     return res(ctx.status(200), ctx.json(newCard));
+  }),
+
+  rest.post("/api/columns", async (req, res, ctx) => {
+    const { columnName } = await req.json<{ columnName: string }>();
+    const newColumn = {
+      columnId: columnData.length + 1,
+      columnName,
+      cards: [],
+    };
+
+    columnData.push(newColumn);
+    return res(ctx.status(200), ctx.json(newColumn));
   }),
 ];

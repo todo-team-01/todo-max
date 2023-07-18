@@ -1,10 +1,9 @@
 import { COLOR_VARIANTS, Color } from "@constants/colors";
-import { radius } from "@constants/objectStyle";
 import { css } from "@emotion/react";
 import { ButtonHTMLAttributes } from "react";
 
 type ButtonVariant = "blue" | "red" | "gray" | "transparent";
-type ButtonPattern = "text" | "icon";
+type ButtonPattern = "text" | "icon" | "FAB";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -36,8 +35,8 @@ const buttonStyle = ({
   iconHoverColor?: Color;
 }) => {
   return css`
-    width: ${pattern === "text" ? "132px" : "auto"};
-    height: ${pattern === "text" ? "32px" : "auto"};
+    width: ${WIDTH[pattern]};
+    height: ${HEIGHT[pattern]};
     outline: none;
     padding: 4px;
     display: flex;
@@ -56,8 +55,26 @@ const buttonStyle = ({
     }
     color: ${BUTTON_VARIANTS[variant].color};
     background: ${BUTTON_VARIANTS[variant].background};
-    ${pattern === "text" && radius.radius8}
+    border-radius: ${RADIUS[pattern]};
   `;
+};
+
+const RADIUS = {
+  text: "8px",
+  icon: "50%",
+  FAB: "50%",
+};
+
+const WIDTH = {
+  text: "132px",
+  icon: "auto",
+  FAB: "56px",
+};
+
+const HEIGHT = {
+  text: "32px",
+  icon: "auto",
+  FAB: "56px",
 };
 
 const BUTTON_VARIANTS = {

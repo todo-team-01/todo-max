@@ -27,5 +27,9 @@ public class CardService {
 	public int deleteCardById(Long id) {
 		return cardRemover.delete(id);
 	}
+
+	public void moveCard(Long id,Long columnId, Long topCardId, Long bottomCardId) {
+		 cardManager.move(id,columnId,topCardId,bottomCardId);
+	}
 }
 

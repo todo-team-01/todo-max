@@ -1,6 +1,7 @@
 package org.codesquad.todo.domain.card;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -10,10 +11,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @JdbcTest
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class CardRepositoryTest {
 	private CardRepository cardRepository;
 	private DatabaseCleaner databaseCleaner;
@@ -54,7 +57,7 @@ public class CardRepositoryTest {
 			.orElseThrow();
 
 		// then
-		Assertions.assertAll(
+		assertAll(
 			() -> assertThat(actual.getId()).isEqualTo(1L),
 			() -> assertThat(actual.getPosition()).isEqualTo(1024L),
 			() -> assertThat(actual).usingRecursiveComparison()
@@ -92,11 +95,69 @@ public class CardRepositoryTest {
 		//then
 		Card findCard = cardRepository.findById(savedId).orElseThrow();
 
-		Assertions.assertAll(
+		assertAll(
 			() -> assertThat(updatedCount).isEqualTo(1L),
 			() -> assertThat(findCard).usingRecursiveComparison()
 				.isEqualTo(updateCard)
 		);
-
 	}
+
+	@DisplayName("해당 컬럼 내 모든 카드의 포지션 간격을 1024로 초기화한다.")
+	@Test
+	void refreshPositionsByColumnId() {
+		// given
+		Card card1 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card2 = new Card(null, "제목2", "내용2", 1L, null);
+		Card card3 = new Card(null, "제목3", "내용3", 1L, null);
+		Long savedId1 = cardRepository.save(card1);
+		Long savedId2 = cardRepository.save(card2);
+		Long savedId3 = cardRepository.save(card3);
+
+		Card updateCard1 = new Card(savedId1, "제목1", "내용1", 1L, 100L);
+		Card updateCard2 = new Card(savedId2, "제목2", "내용2", 1L, 50L);
+		Card updateCard3 = new Card(savedId3, "제목3", "내용3", 1L, 1L);
+		cardRepository.update(updateCard1);
+		cardRepository.update(updateCard2);
+		cardRepository.update(updateCard3);
+
+		List<Card> cardsBeforeRefresh = cardRepository.findAllByColumnId(1L);
+
+		// when
+		int updated = cardRepository.refreshPositionsByColumnId(1L);
+		List<Card> cardsAfterRefresh = cardRepository.findAllByColumnId(1L);
+
+		// then
+		assertAll(
+			() -> assertThat(cardsBeforeRefresh).hasSize(3)
+			.extracting("id", "position")
+			.containsExactlyInAnyOrder(
+				tuple(1L, 100L),
+				tuple(2L, 50L),
+				tuple(3L, 1L)),
+			() -> assertThat(updated).isEqualTo(3),
+			() -> assertThat(cardsAfterRefresh).hasSize(3)
+				.extracting("id", "position")
+				.containsExactlyInAnyOrder(
+					tuple(1L, 3072L),
+					tuple(2L, 2048L),
+					tuple(3L, 1024L))
+		);
+	}
+
+	@DisplayName("카드를 이동 요청 시 position 값을 업데이트한다.")
+	@Test
+	void updatePosition() {
+		// given
+		Card card = new Card(null, "제목1", "내용1", 1L, null);
+		Long savedId = cardRepository.save(card);
+
+		// when
+		cardRepository.updatePosition(savedId, 2L, 1536L);
+		Card updatedCard = cardRepository.findById(savedId).orElseThrow();
+
+		// then
+		assertThat(updatedCard).extracting("id", "columnId", "position")
+			.containsExactly( 1L, 2L, 1536L);
+	}
+
 }

@@ -1,12 +1,13 @@
+import { Position } from "@components/Main";
 import { RemoveModal } from "@components/base/RemoveModal";
 import { dropShadow, radius } from "@constants/objectStyle";
 import { css } from "@emotion/react";
 import { useFetch } from "hooks/useFetch";
-import { useState } from "react";
+import { HTMLAttributes, useEffect, useState } from "react";
 import { CardEditor } from "./CardEditor";
 import { CardViewer } from "./CardViewer";
 
-export interface CardData {
+export interface CardData extends HTMLAttributes<HTMLDivElement> {
   cardId: number;
   title: string;
   content: string;
@@ -16,10 +17,13 @@ export interface CardData {
 interface CardProps {
   cardData: CardData;
   onCardChanged: () => void;
+  setCloneCard: (CardData: CardData, initialPosition: Position) => void;
 }
 
-export const Card = ({ cardData, onCardChanged }: CardProps) => {
+export const Card = ({ cardData, onCardChanged, setCloneCard }: CardProps) => {
   const [status, setStatus] = useState<"viewer" | "editor">("viewer");
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const { fetch: fetchDelete } = useFetch({
@@ -53,8 +57,35 @@ export const Card = ({ cardData, onCardChanged }: CardProps) => {
     onCardChanged();
   };
 
+  const onMouseDownHandler = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsMouseDown(true);
+  };
+
+  const onMouseMoveHandler = (e: React.MouseEvent) => {
+    if (isMouseDown) {
+      setCloneCard(cardData, { x: e.clientX, y: e.clientY });
+      setIsDragging(true);
+    }
+  };
+
+  const onMouseUpHandler = () => {
+    setIsMouseDown(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener("mouseup", onMouseUpHandler);
+    return () => {
+      window.removeEventListener("mouseup", onMouseUpHandler);
+    };
+  }, []);
+
   return (
-    <div css={cardStyle}>
+    <div
+      css={[cardStyle, `${isDragging && "display: none"};`]}
+      onMouseDown={onMouseDownHandler}
+      onMouseMove={onMouseMoveHandler}
+    >
       {status === "viewer" ? (
         <>
           <CardViewer

@@ -3,7 +3,7 @@ import { http } from "utils/http";
 
 interface UseFetchProps<T = Record<string, unknown>> {
   url: string;
-  method: "get" | "post" | "delete" | "put";
+  method: "get" | "post" | "delete" | "put" | "patch";
   body?: T;
   autoFetch?: boolean;
 }

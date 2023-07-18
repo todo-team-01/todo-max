@@ -1,5 +1,6 @@
 package org.codesquad.todo.domain.card;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,6 +63,16 @@ public class CardRepository {
 			+ "position = :position "
 			+ "WHERE id = :id";
 		return jdbcTemplate.update(sql, new BeanPropertySqlParameterSource(card));
+	}
+
+	public int refreshPositionsByColumnId(Long columnId) {
+		String sql = "UPDATE card AS c, (SELECT id, rank() OVER (ORDER BY position ASC) AS ranking FROM card WHERE column_id = :columnId) AS r SET c.position = r.ranking * 1024 WHERE c.id = r.id";
+		return jdbcTemplate.update(sql, Map.of("columnId", columnId));
+	}
+
+	public int updatePosition(Long id, Long columnId, Long changedPosition ) {
+		String sql = "UPDATE card SET column_id = :columnId, position = :changedPosition WHERE id = :id";
+		return jdbcTemplate.update(sql, Map.of("id", id, "columnId", columnId, "changedPosition", changedPosition));
 	}
 
 	public int delete(Long id) {

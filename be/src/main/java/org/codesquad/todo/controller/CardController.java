@@ -3,11 +3,13 @@ package org.codesquad.todo.controller;
 import java.net.URI;
 
 import org.codesquad.todo.controller.dto.CardModifyRequestDto;
+import org.codesquad.todo.controller.dto.CardMoveRequestDto;
 import org.codesquad.todo.controller.dto.CardSaveRequestDto;
 import org.codesquad.todo.controller.dto.CardSaveResponseDto;
 import org.codesquad.todo.domain.card.CardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,6 +42,14 @@ public class CardController {
 		Long cardId = cardService.saveCard(cardSaveRequestDto.toCard());
 		return ResponseEntity.created(URI.create("/cards/" + cardId))
 			.body(new CardSaveResponseDto(cardId));
+	}
+
+	@PatchMapping("/cards/{id}")
+	public ResponseEntity<Void> moveCard(@PathVariable Long id,
+		@RequestBody CardMoveRequestDto cardMoveRequestDto){
+		cardService.moveCard(id,cardMoveRequestDto.getChangedColumnId()
+								,cardMoveRequestDto.getTopCardId(),cardMoveRequestDto.getBottomCardId());
+		return ResponseEntity.ok().build();
 	}
 }
 

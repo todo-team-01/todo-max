@@ -25,7 +25,7 @@ public class ColumnService {
 		this.columnManager = columnManager;
 	}
 
-	public Column save(Column column) {
+	public Long save(Column column) {
 		return columnAppender.append(column);
 	}
 

@@ -19,7 +19,7 @@ public class ColumnSteps {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.body(columnSaveRequestDTO)
-			.when().post("/columns")
+			.when().post("/api/columns")
 			.then().log().all()
 			.extract();
 	}
@@ -27,7 +27,7 @@ public class ColumnSteps {
 	public static ExtractableResponse<Response> 칼럼_카드_전체_조회_요청() {
 		return RestAssured.given().log().all()
 			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/columns")
+			.when().get("/api/columns")
 			.then().log().all()
 			.extract();
 	}
@@ -37,7 +37,7 @@ public class ColumnSteps {
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.body(columnUpdateRequestDTO)
-			.when().put("/columns/{id}", id)
+			.when().put("/api/columns/{id}", id)
 			.then().log().all()
 			.extract();
 	}
@@ -45,7 +45,7 @@ public class ColumnSteps {
 	public static ExtractableResponse<Response> 칼럼_삭제_요청(Long id) {
 		return RestAssured.given().log().all()
 			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().delete("/columns/{id}", id)
+			.when().delete("/api/columns/{id}", id)
 			.then().log().all()
 			.extract();
 	}

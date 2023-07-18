@@ -7,16 +7,16 @@ import java.util.stream.Collectors;
 import org.codesquad.todo.domain.history.History;
 
 public class HistoryResponseDto {
-	private Long id;
-	private LocalDateTime localDateTime;
+	private Long historyId;
+	private LocalDateTime historyCreatedAt;
 	private String historyContent;
 
 	public HistoryResponseDto() {
 	}
 
-	public HistoryResponseDto(Long id, LocalDateTime localDateTime, String historyContent) {
-		this.id = id;
-		this.localDateTime = localDateTime;
+	public HistoryResponseDto(Long historyId, LocalDateTime historyCreatedAt, String historyContent) {
+		this.historyId = historyId;
+		this.historyCreatedAt = historyCreatedAt;
 		this.historyContent = historyContent;
 	}
 
@@ -30,12 +30,12 @@ public class HistoryResponseDto {
 		return new HistoryResponseDto(history.getId(), history.getCreatedAt(), history.getContent());
 	}
 
-	public Long getId() {
-		return this.id;
+	public Long getHistoryId() {
+		return this.historyId;
 	}
 
-	public LocalDateTime getLocalDateTime() {
-		return this.localDateTime;
+	public LocalDateTime getHistoryCreatedAt() {
+		return this.historyCreatedAt;
 	}
 
 	public String getHistoryContent() {

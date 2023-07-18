@@ -1,8 +1,5 @@
-package org.codesquad.todo.controller.util;
+package org.codesquad.todo.util;
 
-import javax.sql.DataSource;
-
-import org.codesquad.todo.util.DatabaseCleaner;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

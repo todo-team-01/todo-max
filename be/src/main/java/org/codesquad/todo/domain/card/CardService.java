@@ -28,8 +28,8 @@ public class CardService {
 		return cardRemover.delete(id);
 	}
 
-	public void moveCard(Long id,Long columnId, Long topCardId, Long bottomCardId) {
-		 cardManager.move(id,columnId,topCardId,bottomCardId);
+	public int moveCard(Long id, Long columnId, Long topCardId, Long bottomCardId) {
+		return cardManager.move(id, columnId, topCardId, bottomCardId);
 	}
 }
 

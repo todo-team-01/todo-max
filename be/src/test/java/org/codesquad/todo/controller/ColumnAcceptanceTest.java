@@ -8,7 +8,7 @@ import java.util.List;
 import org.codesquad.todo.config.ColumnNotFoundException;
 import org.codesquad.todo.controller.dto.ColumnSaveRequestDTO;
 import org.codesquad.todo.controller.dto.ColumnUpdateRequestDTO;
-import org.codesquad.todo.controller.util.AcceptanceTest;
+import org.codesquad.todo.util.AcceptanceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -104,7 +104,7 @@ public class ColumnAcceptanceTest extends AcceptanceTest {
 	private void 저장된_칼럼을_검증한다(ExtractableResponse<Response> response) {
 		Assertions.assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-			() -> assertThat(response.jsonPath().getString("name")).isEqualTo(해야할_일_컬럼_이름)
+			() -> assertThat(response.jsonPath().getLong("columnId")).isEqualTo(1L)
 		);
 	}
 

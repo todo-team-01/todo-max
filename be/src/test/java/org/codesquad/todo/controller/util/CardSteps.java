@@ -16,7 +16,7 @@ public class CardSteps {
 			.body(cardSaveRequestDto)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().post("/cards")
+			.when().post("/api/cards")
 			.then().log().all()
 			.extract();
 	}
@@ -26,14 +26,14 @@ public class CardSteps {
 			.body(cardModifyRequestDto)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().put("/cards/{id}", id)
+			.when().put("/api/cards/{id}", id)
 			.then().log().all()
 			.extract();
 	}
 
 	public static ExtractableResponse<Response> 카드_삭제_요청(Long id) {
 		return RestAssured.given().log().all()
-			.when().delete("/cards/{id}", id)
+			.when().delete("/api/cards/{id}", id)
 			.then().log().all()
 			.extract();
 	}
@@ -43,7 +43,7 @@ public class CardSteps {
 			.body(cardMoveRequestDto)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().patch("/cards/{id}", id)
+			.when().patch("/api/cards/{id}", id)
 			.then().log().all()
 			.extract();
 	}

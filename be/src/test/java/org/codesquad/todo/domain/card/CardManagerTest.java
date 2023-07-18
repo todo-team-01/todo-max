@@ -3,14 +3,13 @@ package org.codesquad.todo.domain.card;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import org.codesquad.todo.util.ServiceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ServiceTest
 class CardManagerTest {
 
 	@InjectMocks
@@ -65,7 +64,7 @@ class CardManagerTest {
 		given(cardReader.findById(3L))
 			.willReturn(new Card(3L, "test3", "content3", 1L, 3072L));
 
-		given(cardRepository.updatePosition(1L ,1L, 2560L)).willReturn(1);
+		given(cardRepository.updatePosition(1L, 1L, 2560L)).willReturn(1);
 
 		// when
 		int updated = cardManager.move(1L, 1L, 3L, 2L);
@@ -83,7 +82,7 @@ class CardManagerTest {
 		given(cardReader.findById(3L))
 			.willReturn(new Card(3L, "test3", "content3", 1L, 102L));
 
-		given(cardRepository.updatePosition(1L ,1L, 101L)).willReturn(1);
+		given(cardRepository.updatePosition(1L, 1L, 101L)).willReturn(1);
 		given(cardRepository.refreshPositionsByColumnId(1L)).willReturn(3);
 
 		// when

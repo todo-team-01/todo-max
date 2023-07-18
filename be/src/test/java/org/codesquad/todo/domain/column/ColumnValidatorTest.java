@@ -2,15 +2,14 @@ package org.codesquad.todo.domain.column;
 
 import static org.mockito.BDDMockito.*;
 
+import org.codesquad.todo.util.ServiceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ServiceTest
 public class ColumnValidatorTest {
 	@InjectMocks
 	private ColumnValidator columnValidator;

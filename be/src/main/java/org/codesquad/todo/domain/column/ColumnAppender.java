@@ -10,7 +10,7 @@ public class ColumnAppender {
 		this.columnRepository = columnRepository;
 	}
 
-	public Column append(Column column) {
+	public Long append(Column column) {
 		return columnRepository.save(column);
 	}
 }

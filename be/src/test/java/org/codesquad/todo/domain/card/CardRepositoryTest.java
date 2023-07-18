@@ -6,17 +6,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 import org.codesquad.todo.util.DatabaseCleaner;
-import org.junit.jupiter.api.Assertions;
+import org.codesquad.todo.util.RepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-@JdbcTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@RepositoryTest
 public class CardRepositoryTest {
 	private CardRepository cardRepository;
 	private DatabaseCleaner databaseCleaner;
@@ -129,11 +126,11 @@ public class CardRepositoryTest {
 		// then
 		assertAll(
 			() -> assertThat(cardsBeforeRefresh).hasSize(3)
-			.extracting("id", "position")
-			.containsExactlyInAnyOrder(
-				tuple(1L, 100L),
-				tuple(2L, 50L),
-				tuple(3L, 1L)),
+				.extracting("id", "position")
+				.containsExactlyInAnyOrder(
+					tuple(1L, 100L),
+					tuple(2L, 50L),
+					tuple(3L, 1L)),
 			() -> assertThat(updated).isEqualTo(3),
 			() -> assertThat(cardsAfterRefresh).hasSize(3)
 				.extracting("id", "position")
@@ -157,7 +154,7 @@ public class CardRepositoryTest {
 
 		// then
 		assertThat(updatedCard).extracting("id", "columnId", "position")
-			.containsExactly( 1L, 2L, 1536L);
+			.containsExactly(1L, 2L, 1536L);
 	}
 
 }

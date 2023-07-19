@@ -21,16 +21,26 @@ public class CardManager {
 
 	public int move(Long cardId, Long columnId, Long topCardId, Long bottomCardId) {
 		cardValidator.validateColumn(columnId);
+		Long validId = cardReader.findById(cardId).getId();
 
 		if (topCardId == null) {
-			Long bottomPosition = cardReader.findById(bottomCardId).getPosition();
-			return cardRepository.updatePosition(cardId, columnId, bottomPosition + 1024);
+			Long bottomPosition = cardReader.findByIdAndColumn(bottomCardId, columnId).getPosition();
+			cardValidator.validateMaxCardId(columnId, bottomCardId);
+			return cardRepository.updatePosition(validId, columnId, bottomPosition + 1024);
 		}
 
-		Long topPosition = cardReader.findById(topCardId).getPosition();
-		Long bottomPosition = bottomCardId == null ? 0L : cardReader.findById(bottomCardId).getPosition();
+		Long topPosition = cardReader.findByIdAndColumn(topCardId, columnId).getPosition();
+
+		if (bottomCardId == null) {
+			cardValidator.validateMinCardId(columnId, topCardId);
+			return cardRepository.updatePosition(validId, columnId, topPosition / 2);
+		}
+
+		cardValidator.validateSequentialCards(columnId, topCardId, bottomCardId);
+
+		Long bottomPosition = cardReader.findByIdAndColumn(bottomCardId, columnId).getPosition();
 		Long newPosition = (topPosition + bottomPosition) / 2;
-		int updated = cardRepository.updatePosition(cardId, columnId, newPosition);
+		int updated = cardRepository.updatePosition(validId, columnId, newPosition);
 
 		if (topPosition - newPosition == 1 || newPosition - bottomPosition == 1) {
 			return cardRepository.refreshPositionsByColumnId(columnId);

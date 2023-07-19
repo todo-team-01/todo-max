@@ -130,8 +130,8 @@ public class CardAcceptanceTest extends AcceptanceTest {
 	}
 
 	private ExtractableResponse<Response> 카드를_이동한다() {
-		CardMoveRequestDto cardMoveRequestDto = new CardMoveRequestDto(1L, 4L, 3L);
-		return 카드_이동_요청(2L, cardMoveRequestDto);
+		CardMoveRequestDto cardMoveRequestDto = new CardMoveRequestDto(1L, 4L, 2L);
+		return 카드_이동_요청(3L, cardMoveRequestDto);
 	}
 
 	private void 이동한_카드를_검증한다(ExtractableResponse<Response> response) {

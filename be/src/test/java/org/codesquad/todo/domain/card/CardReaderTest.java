@@ -72,4 +72,34 @@ class CardReaderTest {
 				.isEqualTo(cards)
 		);
 	}
+
+	@DisplayName("컬럼 Id와 카드 ID를 통해 해당 카드 정보를 가져온다")
+	@Test
+	void findByIdAndColumn() {
+		// given
+		Long id = 1L;
+		Card card = new Card(id, "title", "content", 1L, 1024L);
+
+		given(cardRepository.findByIdAndColumn(any(),any())).willReturn(Optional.of(card));
+
+		// when
+		Card actual = cardReader.findByIdAndColumn(id,1L);
+
+		// then
+		assertThat(actual).usingRecursiveComparison().isEqualTo(card);
+	}
+
+	@DisplayName("카드를 조회할 때 컬럼에 저장 되어 있지 않는 카드 아이디를 입력 받으면 에러를 반환한다.")
+	@Test
+	void findByIdAndColumnFail() {
+		// given
+		Long id = 1L;
+		Card card = new Card(id, "title", "content", 1L, 1024L);
+		given(cardRepository.findByIdAndColumn(any(),any())).willReturn(Optional.empty());
+
+
+		// then
+		Assertions.assertThrows(CardNotFoundException.class, () -> cardReader.findByIdAndColumn(id,2L));
+	}
+
 }

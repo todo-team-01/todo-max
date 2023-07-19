@@ -16,6 +16,7 @@ import org.codesquad.todo.controller.dto.CardSaveRequestDto;
 import org.codesquad.todo.controller.dto.CardSaveResponseDto;
 import org.codesquad.todo.controller.dto.ColumnSaveRequestDTO;
 import org.codesquad.todo.util.AcceptanceTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -92,10 +93,7 @@ public class CardAcceptanceTest extends AcceptanceTest {
 	@Test
 	void moveCard() {
 		// given
-		칼럼과_카드를_생성한다();
-		칼럼과_카드를_생성한다();
-		카드를_생성한다(2L);
-		카드를_생성한다(1L);
+		칼럼과_카드들을_생성한다();
 
 		// when
 		var response = 카드를_이동한다();
@@ -108,9 +106,10 @@ public class CardAcceptanceTest extends AcceptanceTest {
 	@Test
 	void moveCardFailWithNoColumn() {
 		// given
+		칼럼과_카드들을_생성한다();
 
 		// when
-		var response = 카드를_이동한다();
+		var response = 컬럼_아이디가_존재하지_않는_카드를_이동한다();
 
 		// then
 		칼럼_아이디가_존재하지_않아서_실패한_요청을_검증한다(response);
@@ -127,15 +126,6 @@ public class CardAcceptanceTest extends AcceptanceTest {
 
 		// then
 		카드_아이디가_존재하지_않아서_실패한_요청을_검증한다(response);
-	}
-
-	private ExtractableResponse<Response> 카드를_이동한다() {
-		CardMoveRequestDto cardMoveRequestDto = new CardMoveRequestDto(1L, 4L, 2L);
-		return 카드_이동_요청(3L, cardMoveRequestDto);
-	}
-
-	private void 이동한_카드를_검증한다(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
 	private void 칼럼을_생성한다() {
@@ -187,6 +177,34 @@ public class CardAcceptanceTest extends AcceptanceTest {
 		);
 	}
 
+	private void 칼럼과_카드들을_생성한다() {
+		칼럼_생성_요청(new ColumnSaveRequestDTO("해야할 일"));
+		칼럼_생성_요청(new ColumnSaveRequestDTO("하고 있는 일"));
+		카드_생성_요청(new CardSaveRequestDto(2L, "Git 공부하기", "test1"));
+		카드_생성_요청(new CardSaveRequestDto(2L, "모니터링 구축하기", "test2"));
+		카드_생성_요청(new CardSaveRequestDto(1L, "로그인 구현하기", "test3"));
+		카드_생성_요청(new CardSaveRequestDto(1L, "배포 하기", "test4"));
+	}
+
+	private ExtractableResponse<Response> 카드를_이동한다() {
+		CardMoveRequestDto cardMoveRequestDto = new CardMoveRequestDto(1L, 4L, 3L);
+		return 카드_이동_요청(2L, cardMoveRequestDto);
+	}
+
+	private void 이동한_카드를_검증한다(ExtractableResponse<Response> response) {
+		List<String> contents = 히스토리_전체_조회_요청().jsonPath().getList("historyContent", String.class);
+
+		Assertions.assertAll(
+			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+			() -> assertThat(contents).contains("모니터링 구축하기을(를) 하고 있는 일에서 해야할 일으로 이동하였습니다.")
+		);
+	}
+
+	private ExtractableResponse<Response> 컬럼_아이디가_존재하지_않는_카드를_이동한다() {
+		CardMoveRequestDto cardMoveRequestDto = new CardMoveRequestDto(3L, 4L, 3L);
+		return 카드_이동_요청(2L, cardMoveRequestDto);
+	}
+
 	private void 카드_아이디가_존재하지_않아서_실패한_요청을_검증한다(ExtractableResponse<Response> response) {
 		String message = response.jsonPath().getString("message");
 		assertAll(
@@ -203,5 +221,4 @@ public class CardAcceptanceTest extends AcceptanceTest {
 			() -> assertThat(contents).contains("Git 공부하기을(를)이 삭제 되었습니다.")
 		);
 	}
-
 }

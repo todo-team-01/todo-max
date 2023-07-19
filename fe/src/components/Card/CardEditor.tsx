@@ -8,10 +8,7 @@ import { CardData } from "./Card";
 
 interface CardEditorProps {
   cardData?: CardData;
-  newCardInfo?: {
-    columnId: number;
-    nextCardId: number;
-  };
+  columnId?: number;
   type: "add" | "edit";
   onCancel: () => void;
   onSubmit: () => void;
@@ -19,7 +16,7 @@ interface CardEditorProps {
 
 export const CardEditor = ({
   cardData,
-  newCardInfo,
+  columnId,
   type,
   onCancel,
   onSubmit,
@@ -32,10 +29,9 @@ export const CardEditor = ({
     url: "/api/cards",
     method: "post",
     body: {
-      columnId: newCardInfo?.columnId,
+      columnId: columnId,
       cardTitle: title,
       cardContent: content,
-      nextCardId: newCardInfo?.nextCardId,
     },
   });
 

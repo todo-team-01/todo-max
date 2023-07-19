@@ -3,14 +3,12 @@ import { CardEditor } from "./CardEditor";
 
 interface NewCardProps {
   columnId: number;
-  nextCardId: number;
   onAddCancelClick: () => void;
   onCardChanged: () => void;
 }
 
 export const NewCard = ({
   columnId,
-  nextCardId,
   onAddCancelClick,
   onCardChanged,
 }: NewCardProps) => {
@@ -25,7 +23,7 @@ export const NewCard = ({
         type="add"
         onCancel={onAddCancelClick}
         onSubmit={onSubmit}
-        newCardInfo={{ columnId, nextCardId }}
+        columnId={columnId}
       />
     </div>
   );

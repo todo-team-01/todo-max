@@ -1,10 +1,15 @@
 import { CardData } from "@components/Card/Card";
 import { faker } from "@faker-js/faker";
 import { rest } from "msw";
-import { CardAddRequestBody } from "utils/http";
 import { CARDS } from "./data";
 
-interface RequestBodyType {
+type CardAddRequestBody = {
+  columnId: number;
+  cardTitle: string;
+  cardContent: string;
+};
+
+interface CardEditRequestBody {
   changedCardTitle: string;
   changedCardContent: string;
 }
@@ -114,10 +119,10 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(historyData));
   }),
 
-  rest.put("/api/cards/:id", (req, res, ctx) => {
+  rest.put("/api/cards/:id", async (req, res, ctx) => {
     const { id } = req.params;
     const { changedCardTitle, changedCardContent } =
-      req.body as RequestBodyType;
+    await req.json<CardEditRequestBody>();
 
     columnData = columnData.map((column) => ({
       ...column,

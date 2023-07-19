@@ -1,74 +1,46 @@
-export type CardAddRequestBody = {
-  columnId: number;
-  cardTitle: string;
-  cardContent: string;
-  nextCardId: number;
+const defaultHeaders = {
+  "Content-Type": "application/json",
 };
 
-export type RequestMap = {
-  "/api/cards": CardAddRequestBody;
-  "/api": undefined;
-};
+const handleFetch = async (url: string, options?: RequestInit) => {
+  const response = await fetch(url, options);
 
-export type RequestBody = RequestMap[keyof RequestMap];
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  return response.json();
+};
 
 export const http = {
-  get: async (url: string) => {
-    const response = await fetch(url);
+  get: async (url: string) => handleFetch(url),
 
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    return response.json();
-  },
-
-  post: async (url: string, body?: object) => {
-    const option = {
+  post: async (url: string, body?: Record<string, unknown>) => {
+    const options: RequestInit = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: defaultHeaders,
       body: JSON.stringify(body),
     };
 
-    const response = await fetch(url, option);
-
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    return response.json();
+    return handleFetch(url, options);
   },
 
-  put: async (url: string, body?: object) => {
-    const options = {
+  put: async (url: string, body?: Record<string, unknown>) => {
+    const options: RequestInit = {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: defaultHeaders,
       body: JSON.stringify(body),
     };
 
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    return response.json();
+    return handleFetch(url, options);
   },
 
   delete: async (url: string) => {
-    const option = {
+    const options: RequestInit = {
       method: "DELETE",
     };
 
-    const response = await fetch(url, option);
-
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
+    return handleFetch(url, options);
   },
 
   patch: async (url: string, body?: object) => {

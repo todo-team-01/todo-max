@@ -1,5 +1,7 @@
 package org.codesquad.todo.config;
 
+import java.util.Objects;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -44,6 +46,27 @@ public class HistoryAspect {
 		String content = String.format("%s을(를) 변경하였습니다.", title);
 		historyAppender.append(new History(content));
 		return proceed;
+	}
+
+	@Around("execution(* org.codesquad.todo.domain.card.CardService.moveCard(..))")
+	public Object converterContentMove(ProceedingJoinPoint joinPoint) throws Throwable {
+		Long cardId = (Long)joinPoint.getArgs()[0];
+		Long afterCardColumnId = (Long)joinPoint.getArgs()[1];
+		Long beforeCardColumnId = cardReader.findById(cardId).getColumnId();
+		String cardTitle = cardReader.findById(cardId).getTitle();
+
+		Object result = joinPoint.proceed();
+		if (Objects.equals(beforeCardColumnId, afterCardColumnId)) {
+			return result;
+		}
+
+		String afterColumnName = columnReader.findById(afterCardColumnId).getName();
+		String beforeColumnName = columnReader.findById(beforeCardColumnId).getName();
+		String content = String.format("%s을(를) %s에서 %s으로 이동하였습니다.", cardTitle, beforeColumnName, afterColumnName);
+
+		historyAppender.append(new History(content));
+
+		return result;
 	}
 
 	@Around("execution(* org.codesquad.todo.domain.card.CardService.deleteCardById(..))")

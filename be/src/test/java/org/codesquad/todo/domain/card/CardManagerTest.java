@@ -43,9 +43,10 @@ class CardManagerTest {
 	@Test
 	void moveCardWithNoTopCard() {
 		// given
-		given(cardReader.findById(2L))
-			.willReturn(new Card(2L, "test3", "content3", 1L, 2048L));
-
+		given(cardReader.findById(any()))
+			.willReturn(new Card(1L, "이동할 카드", "이동할 카드", 1L, 1024L));
+		given(cardReader.findByIdAndColumn(any(), any()))
+			.willReturn(new Card(2L, "맨 위에 있는 카드", "맨 위에 있는 카드", 1L, 2048L));
 		given(cardRepository.updatePosition(1L, 1L, 3072L)).willReturn(1);
 
 		// when
@@ -59,10 +60,11 @@ class CardManagerTest {
 	@Test
 	void moveCard() {
 		// given
-		given(cardReader.findById(2L))
-			.willReturn(new Card(2L, "test2", "content2", 1L, 2048L));
-		given(cardReader.findById(3L))
-			.willReturn(new Card(3L, "test3", "content3", 1L, 3072L));
+		given(cardReader.findById(1L))
+			.willReturn(new Card(1L, "이동할 카드", "이동할 카드", 1L, 1024L));
+		given(cardReader.findByIdAndColumn(any(), any()))
+			.willReturn(new Card(3L, "top card", "위에 있는 카드", 1L, 3072L))
+			.willReturn(new Card(2L, "bottom card", "밑에 있는 카드", 1L, 2048L));
 
 		given(cardRepository.updatePosition(1L, 1L, 2560L)).willReturn(1);
 
@@ -77,10 +79,12 @@ class CardManagerTest {
 	@Test
 	void moveCardWithRefresh() {
 		// given
-		given(cardReader.findById(2L))
-			.willReturn(new Card(2L, "test2", "content2", 1L, 100L));
-		given(cardReader.findById(3L))
-			.willReturn(new Card(3L, "test3", "content3", 1L, 102L));
+		given(cardReader.findById(1L))
+			.willReturn(new Card(1L, "이동할 카드", "이동할 카드", 1L, 1024L));
+		given(cardReader.findByIdAndColumn(2L, 1L))
+			.willReturn(new Card(2L, "밑에 있는 카드", "밑에 있는 카드", 1L, 100L));
+		given(cardReader.findByIdAndColumn(3L, 1L))
+			.willReturn(new Card(3L, "위에 있는 카드", "위에 있는 카드", 1L, 102L));
 
 		given(cardRepository.updatePosition(1L, 1L, 101L)).willReturn(1);
 		given(cardRepository.refreshPositionsByColumnId(1L)).willReturn(3);

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
 @RepositoryTest
 public class CardRepositoryTest {
@@ -157,4 +158,74 @@ public class CardRepositoryTest {
 			.containsExactly(1L, 2L, 1536L);
 	}
 
+	@DisplayName("columnId와 id 를 입력해서 해당 id의 position 값이 최댓값이면 true 를 리턴  ")
+	@Test
+	void isMax() {
+		// given
+		Card card1 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card2 = new Card(null, "제목1", "내용1", 1L, null);
+		cardRepository.save(card1);
+		Long savedId2 = cardRepository.save(card2);
+
+		// when
+		Boolean max = cardRepository.isMax(1L,savedId2);
+
+		// then
+		assertThat(max).isTrue();
+	}
+
+	@DisplayName("columnId와 id 를 입력해서 해당 id의 position 값이 최소값이면 true 를 리턴")
+	@Test
+	void isMin() {
+		// given
+		Card card1 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card2 = new Card(null, "제목1", "내용1", 1L, null);
+		Long savedId1 =cardRepository.save(card1);
+		 cardRepository.save(card2);
+		// when
+		Boolean min = cardRepository.isMin(1L,savedId1);
+
+		// then
+		assertThat(min).isTrue();
+
+	}
+
+	@DisplayName("입력 받은 컬럼에 있는 top,bottom 카드를 입력받아 순위가 담긴 리스트를 반환받는다 ")
+	@Test
+	void findRankingById() {
+		// given
+		Card card1 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card2 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card3 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card4 = new Card(null, "제목1", "내용1", 2L, null);
+		Long savedId1 =cardRepository.save(card1);
+		Long savedId2 =cardRepository.save(card2);
+		Long savedId3 =cardRepository.save(card3);
+		Long savedId4 =cardRepository.save(card4);
+		// when
+		List<Long> rankings = cardRepository.findRankingById(1L,savedId1,savedId3);
+		//then
+		assertThat(rankings.get(0)).isEqualTo(1L);
+		assertThat(rankings.get(1)).isEqualTo(3L);
+
+	}
+
+	@DisplayName("입력받은 컬럼에 입력받은 아이디를 찾는다 ")
+	@Test
+	void findByIdAndColumn() {
+		// given
+		Card card = new Card(null, "테스트", "내용", 1L, null);
+		Long savedId = cardRepository.save(card);
+
+		// when
+		Card actual = cardRepository.findByIdAndColumn(savedId,1L)
+			.orElseThrow();
+
+		// then
+		 assertThat(actual.getId()).isEqualTo(1L);
+		 assertThat(actual.getColumnId()).isEqualTo(1L);
+
+	}
+
 }
+

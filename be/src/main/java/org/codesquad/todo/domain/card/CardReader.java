@@ -21,4 +21,13 @@ public class CardReader {
 	public List<Card> findAllByColumnId(Long columnId) {
 		return cardRepository.findAllByColumnId(columnId);
 	}
+
+	public Card findByIdAndColumn(Long id, Long columnId) {
+		return cardRepository.findByIdAndColumn(id,columnId)
+			.orElseThrow(CardNotFoundException::new);
+	}
+
+	public List<Long> findRankingById (Long columnId,Long topCardId,Long bottomCardId) {
+		return cardRepository.findRankingById(columnId,topCardId,bottomCardId);
+	}
 }

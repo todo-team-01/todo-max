@@ -1,5 +1,6 @@
 package org.codesquad.todo.util;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -16,20 +17,32 @@ public class DatabaseCleaner {
 	private static final String MYSQL = "MySQL";
 	private static final String H2 = "H2";
 
-	private JdbcTemplate jdbcTemplate;
-	private List<String> tableNames;
-	private String driverName;
+	private final JdbcTemplate jdbcTemplate;
+	private final List<String> tableNames;
+	private final String driverName;
 
 	@Autowired
 	public DatabaseCleaner(JdbcTemplate jdbcTemplate) {
+		Connection con = null;
 		try {
 			this.jdbcTemplate = jdbcTemplate;
+			con = jdbcTemplate.getDataSource().getConnection();
 			this.tableNames = jdbcTemplate.query("Show tables", (rs, nums) -> rs.getString(1));
-			this.driverName = jdbcTemplate.getDataSource().getConnection()
-				.getMetaData()
-				.getDatabaseProductName();
+			this.driverName = con.getMetaData().getDatabaseProductName();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		} finally {
+			connectionClose(con);
+		}
+	}
+
+	private static void connectionClose(Connection con) {
+		if (con != null) {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

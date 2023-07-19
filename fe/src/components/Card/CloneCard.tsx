@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import React, { useCallback, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import { CardData, cardStyle } from "./Card";
 import { CardViewer } from "./CardViewer";
 
@@ -7,8 +7,7 @@ export interface Position {
   x: number;
   y: number;
 }
-
-export const CloneCard = React.memo(
+export const CloneCard = memo(
   ({
     cardData,
     initialPosition,
@@ -16,30 +15,37 @@ export const CloneCard = React.memo(
     cardData: CardData;
     initialPosition: Position;
   }) => {
-    const [position, setPosition] = useState<Position>(initialPosition);
-    const positionRef = useRef(position);
-    positionRef.current = position;
+    const cardRef = useRef<HTMLDivElement>(null);
 
-    const moveCard = useCallback(
-      (e: React.MouseEvent) => {
-        setPosition({ x: e.clientX, y: e.clientY });
-      },
-      [setPosition]
-    );
+    useEffect(() => {
+      if (cardRef.current) {
+        cardRef.current.style.left = `${initialPosition.x - 150}px`;
+        cardRef.current.style.top = `${initialPosition.y - 44}px`;
+      }
+    }, [initialPosition]);
 
-    const handleMouseMove = (e: React.MouseEvent) => {
-      window.requestAnimationFrame(() => moveCard(e));
-    };
+    const moveCard = useCallback((e: MouseEvent) => {
+      if (cardRef.current) {
+        cardRef.current.style.left = `${e.clientX - 150}px`;
+        cardRef.current.style.top = `${e.clientY - 44}px`;
+      }
+    }, []);
+
+    useEffect(() => {
+      window.addEventListener("mousemove", moveCard);
+
+      return () => {
+        window.removeEventListener("mousemove", moveCard);
+      };
+    }, [moveCard]);
 
     const cloneCardStyle = css`
       position: fixed;
-      left: ${positionRef.current.x - 150}px;
-      top: ${positionRef.current.y - 44}px;
       background: white;
     `;
 
     return (
-      <div css={[cardStyle, cloneCardStyle]} onMouseMove={handleMouseMove}>
+      <div ref={cardRef} css={[cardStyle, cloneCardStyle]}>
         <CardViewer
           onClickEdit={() => {}}
           onClickRemove={() => {}}

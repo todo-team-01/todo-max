@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { http } from "utils/http";
 
 interface UseFetchProps<T = Record<string, unknown>> {
@@ -23,7 +23,7 @@ export const useFetch = <T extends Record<string, unknown>>({
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const fetch = async () => {
+  const fetch = useCallback(async () => {
     setLoading(true);
     try {
       const res = await http[method](url, body);
@@ -36,7 +36,7 @@ export const useFetch = <T extends Record<string, unknown>>({
     } finally {
       setLoading(false);
     }
-  };
+  }, [url, method, body]);
 
   useEffect(() => {
     if (autoFetch) {

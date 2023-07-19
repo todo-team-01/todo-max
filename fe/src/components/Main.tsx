@@ -1,11 +1,9 @@
-import { css } from "@emotion/react";
 import { useFetch } from "hooks/useFetch";
-import _, { debounce } from "lodash";
-import { useEffect, useRef, useState } from "react";
+import _ from "lodash";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CardData } from "./Card/Card";
 import { CloneCard } from "./Card/CloneCard";
 import Column from "./Column";
-import { FAB } from "./FAB";
 
 export interface Position {
   x: number;
@@ -40,7 +38,7 @@ export const Main = () => {
   const [cloneCardData, setCloneCardData] = useState<CardData>();
   const [bodyContent, setBodyContent] = useState({});
 
-  const { response, errorMsg, loading, fetch } = useFetch({
+  const { response, fetch } = useFetch({
     url: "/api/columns",
     method: "get",
     autoFetch: true,
@@ -72,9 +70,11 @@ export const Main = () => {
       mousePosition.cardIndex > 0
         ? currentCards[mousePosition.cardIndex - 1].cardId
         : null;
+
     const bottomCardId =
-      mousePosition.cardIndex < currentCards.length - 1
-        ? currentCards[mousePosition.cardIndex + 1].cardId
+      mousePosition.cardIndex < currentCards.length ||
+      mousePosition.cardIndex === currentCards.length - 1
+        ? currentCards[mousePosition.cardIndex].cardId
         : null;
 
     const result = {
@@ -86,20 +86,17 @@ export const Main = () => {
     setBodyContent(result);
   };
 
-  const onCardChanged = async () => {
+  const onCardChanged = useCallback(async () => {
     await fetch();
-  };
+  }, [fetch]);
 
-  const setCloneCard = (cardData: CardData, initialPosition: Position) => {
-    setCloneCardData((prev) => {
-      if (!_.isEqual(prev, cardData)) {
-        return cardData;
-      }
-      return prev;
-    });
-
-    setInitialPosition(initialPosition);
-  };
+  const setCloneCard = useCallback(
+    (cardData: CardData, initialPosition: Position) => {
+      setCloneCardData(cardData);
+      setInitialPosition(initialPosition);
+    },
+    []
+  );
 
   const resetCloneCard = () => {
     setCloneCardData(undefined);
@@ -109,7 +106,7 @@ export const Main = () => {
     });
   };
 
-  const onMouseMove = debounce((event: React.MouseEvent) => {
+  const onMouseMove = (event: React.MouseEvent) => {
     if (!cloneCardData || !mainRef.current) return;
 
     const mousePos = { x: event.clientX, y: event.clientY };
@@ -153,22 +150,23 @@ export const Main = () => {
         setMousePosition({ columnIndex, cardIndex });
       }
     }
-  }, 30);
+  };
 
   const onMouseUp = async () => {
-    if (mousePosition.columnIndex === -1 || mousePosition.cardIndex === -1) {
-      return;
-    }
+    if (mousePosition.columnIndex !== -1 && mousePosition.cardIndex !== -1) {
+      resetCloneCard();
 
-    resetCloneCard();
-    await fetchCardPatch();
-    await onCardChanged();
+      if (!_.isEmpty(bodyContent)) {
+        await fetchCardPatch();
+        await onCardChanged();
+      }
+    }
   };
 
   return (
     <div
       ref={mainRef}
-      css={mainStyle}
+      css={{ display: "flex", gap: "24px" }}
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}
     >
@@ -191,15 +189,6 @@ export const Main = () => {
       {cloneCardData !== undefined && (
         <CloneCard cardData={cloneCardData} initialPosition={initialPosition} />
       )}
-      <FAB onColumnChanged={onCardChanged} />
     </div>
   );
 };
-
-const mainStyle = css({
-  display: "flex",
-  gap: "24px",
-  width: "1280px",
-  overflow: "hidden",
-  overflowX: "scroll",
-});

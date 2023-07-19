@@ -7,13 +7,13 @@ import org.codesquad.todo.domain.card.Card;
 
 public class CardResponseDTO {
 	private Long cardId;
-	private String title;
-	private String content;
+	private String cardTitle;
+	private String cardContent;
 
-	public CardResponseDTO(Long cardId, String title, String content) {
+	public CardResponseDTO(Long cardId, String cardTitle, String cardContent) {
 		this.cardId = cardId;
-		this.title = title;
-		this.content = content;
+		this.cardTitle = cardTitle;
+		this.cardContent = cardContent;
 	}
 
 	public static List<CardResponseDTO> from(List<Card> cards) {
@@ -30,11 +30,11 @@ public class CardResponseDTO {
 		return cardId;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getCardTitle() {
+		return cardTitle;
 	}
 
-	public String getContent() {
-		return content;
+	public String getCardContent() {
+		return cardContent;
 	}
 }

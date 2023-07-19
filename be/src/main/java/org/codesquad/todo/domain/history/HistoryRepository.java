@@ -27,7 +27,7 @@ public class HistoryRepository {
 	}
 
 	public List<History> findAll() {
-		String sql = "SELECT id, content, created_at, is_deleted FROM history WHERE is_deleted = FALSE ORDER BY created_at DESC";
+		String sql = "SELECT id, content, created_at, is_deleted FROM history WHERE is_deleted = FALSE ORDER BY id DESC";
 		return jdbcTemplate.query(sql, HISTORY_ROW_MAPPER);
 	}
 

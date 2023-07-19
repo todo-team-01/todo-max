@@ -3,13 +3,12 @@ package org.codesquad.todo.domain.history;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import org.codesquad.todo.util.ServiceTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ServiceTest
 class HistoryRemoverTest {
 
 	@InjectMocks

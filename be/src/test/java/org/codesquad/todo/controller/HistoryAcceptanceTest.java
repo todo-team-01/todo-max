@@ -10,7 +10,7 @@ import java.util.List;
 import org.codesquad.todo.controller.dto.CardSaveRequestDto;
 import org.codesquad.todo.controller.dto.ColumnSaveRequestDTO;
 import org.codesquad.todo.controller.dto.HistoryResponseDto;
-import org.codesquad.todo.controller.util.AcceptanceTest;
+import org.codesquad.todo.util.AcceptanceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import io.restassured.response.Response;
 
 class HistoryAcceptanceTest extends AcceptanceTest {
 
-	@DisplayName("모든 사용자 기록을 조회한다")
+	@DisplayName("모든 사용자 기록을 조회한다.")
 	@Test
 	void findAll() {
 		// given
@@ -34,6 +34,7 @@ class HistoryAcceptanceTest extends AcceptanceTest {
 		조회된_사용자_목록들을_검증한다(response);
 	}
 
+	@DisplayName("모든 사용자 기록을 삭제한다.")
 	@Test
 	void deleteAll() {
 		// given

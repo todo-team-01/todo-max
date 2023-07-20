@@ -16,7 +16,7 @@ export const CardViewer = ({
   onClickEdit,
   onClickRemove,
 }: CardViewerProps) => {
-  const { cardTitle: title, cardContent: content, writer } = cardData;
+  const { cardTitle, cardContent, writer } = cardData;
 
   return (
     <div
@@ -34,14 +34,14 @@ export const CardViewer = ({
             css={{ height: "17px", color: COLOR_VARIANTS.textStrong }}
             typography="displayBold14"
           >
-            {title}
+            {cardTitle}
           </Text>
 
           <Text
             css={{ height: "17px", color: COLOR_VARIANTS.textDefault }}
             typography="displayBold14"
           >
-            {content}
+            {cardContent}
           </Text>
         </div>
         <Text

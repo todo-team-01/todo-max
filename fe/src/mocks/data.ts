@@ -4,8 +4,8 @@ import { faker } from "@faker-js/faker";
 export function createRandomCard(cardId: number): CardData {
   return {
     cardId,
-    title: faker.internet.domainName(),
-    content: faker.word.words(),
+    cardTitle: faker.internet.domainName(),
+    cardContent: faker.word.words(),
     writer: "web",
   };
 }

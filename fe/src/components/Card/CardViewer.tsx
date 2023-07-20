@@ -7,8 +7,8 @@ import { CardData } from "./Card";
 
 interface CardViewerProps {
   cardData: CardData;
-  onClickEdit: () => void;
-  onClickRemove: () => void;
+  onClickEdit?: () => void;
+  onClickRemove?: () => void;
 }
 
 export const CardViewer = ({
@@ -16,7 +16,7 @@ export const CardViewer = ({
   onClickEdit,
   onClickRemove,
 }: CardViewerProps) => {
-  const { title, content, writer } = cardData;
+  const { cardTitle: title, cardContent: content, writer } = cardData;
 
   return (
     <div

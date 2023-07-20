@@ -17,18 +17,19 @@ export const CloneCard = memo(
   }) => {
     const cardRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-      if (cardRef.current) {
-        cardRef.current.style.left = `${initialPosition.x - 150}px`;
-        cardRef.current.style.top = `${initialPosition.y - 44}px`;
-      }
-    }, [initialPosition]);
-
     const moveCard = useCallback((e: MouseEvent) => {
+      editPoint({ x: e.clientX, y: e.clientY });
+    }, []);
+
+    const editPoint = (point: Position) => {
       if (cardRef.current) {
-        cardRef.current.style.left = `${e.clientX - 150}px`;
-        cardRef.current.style.top = `${e.clientY - 44}px`;
+        cardRef.current.style.left = `${point.x - 150}px`;
+        cardRef.current.style.top = `${point.y - 44}px`;
       }
+    };
+
+    useEffect(() => {
+      editPoint(initialPosition);
     }, []);
 
     useEffect(() => {
@@ -46,11 +47,7 @@ export const CloneCard = memo(
 
     return (
       <div ref={cardRef} css={[cardStyle, cloneCardStyle]}>
-        <CardViewer
-          onClickEdit={() => {}}
-          onClickRemove={() => {}}
-          cardData={cardData}
-        />
+        <CardViewer cardData={cardData} />
       </div>
     );
   }

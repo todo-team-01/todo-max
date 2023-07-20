@@ -1,13 +1,11 @@
-import { Card, CardData } from "@components/Card/Card";
+import { Card, CardData, cardStyle } from "@components/Card/Card";
+import { CardViewer } from "@components/Card/CardViewer";
 import { NewCard } from "@components/Card/NewCard";
 import { Position } from "@components/Main";
 import React, { useState } from "react";
 import { ColumnHeader } from "./ColumnHeader";
 
-interface ColumnDataProps {
-  columnId: number;
-  columnName: string;
-  cards: CardData[];
+interface ColumnProps extends ColumnType {
   onCardChanged: () => void;
   setCloneCard: (cardData: CardData, initialPosition: Position) => void;
   cloneState: {
@@ -17,6 +15,12 @@ interface ColumnDataProps {
   };
 }
 
+export interface ColumnType {
+  columnId: number;
+  columnName: string;
+  cards: CardData[];
+}
+
 export const Column = ({
   columnId,
   columnName,
@@ -24,7 +28,7 @@ export const Column = ({
   onCardChanged,
   setCloneCard,
   cloneState,
-}: ColumnDataProps) => {
+}: ColumnProps) => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const onAddCardClick = () => setIsAdding((prev) => !prev);
   const onAddCancelClick = () => setIsAdding(false);
@@ -32,13 +36,9 @@ export const Column = ({
 
   const isCloneValid = cloneState.hasClone && cloneState.cloneCardData;
 
-  const CloneCard = (
-    <div css={{ opacity: "0.5" }}>
-      <Card
-        cardData={cloneState.cloneCardData!}
-        onCardChanged={onCardChanged}
-        setCloneCard={setCloneCard}
-      />
+  const GhostCard = (
+    <div css={[cardStyle, { opacity: "0.5" }]}>
+      <CardViewer cardData={cloneState.cloneCardData!} />
     </div>
   );
 
@@ -67,7 +67,7 @@ export const Column = ({
       )}
       {cards.map((cardData, index) => (
         <React.Fragment key={`${index}_${cardData.cardId}`}>
-          {isCloneValid && cloneState.cardIndex === index && CloneCard}
+          {isCloneValid && cloneState.cardIndex === index && GhostCard}
           <Card
             key={`${index}_${cardData.cardId}`}
             cardData={cardData}
@@ -76,7 +76,7 @@ export const Column = ({
           />
         </React.Fragment>
       ))}
-      {isCloneValid && cloneState.cardIndex === cards.length && CloneCard}
+      {isCloneValid && cloneState.cardIndex === cards.length && GhostCard}
     </div>
   );
 };

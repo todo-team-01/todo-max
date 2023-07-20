@@ -21,8 +21,8 @@ export const CardEditor = ({
   onCancel,
   onSubmit,
 }: CardEditorProps) => {
-  const [title, setTitle] = useState(cardData?.title || "");
-  const [content, setContent] = useState(cardData?.content || "");
+  const [title, setTitle] = useState(cardData?.cardTitle || "");
+  const [content, setContent] = useState(cardData?.cardContent || "");
   const isAllFilled = !!title && !!content;
 
   const { fetch: fetchAdd } = useFetch({
@@ -54,8 +54,8 @@ export const CardEditor = ({
 
   const handleClickCancel = () => {
     onCancel();
-    setTitle(cardData?.title || "");
-    setContent(cardData?.content || "");
+    setTitle(cardData?.cardTitle || "");
+    setContent(cardData?.cardContent || "");
   };
 
   const handleClickSubmit = async () => {

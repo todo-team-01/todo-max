@@ -3,14 +3,14 @@ import { RemoveModal } from "@components/base/RemoveModal";
 import { dropShadow, radius } from "@constants/objectStyle";
 import { css } from "@emotion/react";
 import { useFetch } from "hooks/useFetch";
-import React, { HTMLAttributes, memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { CardEditor } from "./CardEditor";
 import { CardViewer } from "./CardViewer";
 
-export interface CardData extends HTMLAttributes<HTMLDivElement> {
+export interface CardData {
   cardId: number;
-  title: string;
-  content: string;
+  cardTitle: string;
+  cardContent: string;
   writer: string;
 }
 
@@ -87,7 +87,7 @@ export const Card = memo(
 
     return (
       <div
-        css={[cardStyle, `${isDragging && "display: none"};`]}
+        css={[cardStyle, isDragging && { display: "none" }]}
         onMouseDown={onMouseDownHandler}
         onMouseMove={onMouseMoveHandler}
       >

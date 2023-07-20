@@ -23,6 +23,11 @@ public class CardManager {
 		cardValidator.validateColumn(columnId);
 		Long validId = cardReader.findById(cardId).getId();
 
+		if (topCardId == null && bottomCardId == null) {
+			cardValidator.validateNoCardInColumn(columnId);
+			return cardRepository.updatePosition(validId, columnId, 1024L);
+		}
+
 		if (topCardId == null) {
 			Long bottomPosition = cardReader.findByIdAndColumn(bottomCardId, columnId).getPosition();
 			cardValidator.validateMaxCardId(columnId, bottomCardId);

@@ -52,7 +52,8 @@ public class CardRepository {
 	public Optional<Card> findByIdAndColumn(Long id, Long columnId) {
 		String sql = "SELECT id, title, content, column_id, position FROM card WHERE id = :id and column_id= :columnId";
 		return Optional.ofNullable(
-			DataAccessUtils.singleResult(jdbcTemplate.query(sql, Map.of("id", id,"columnId",columnId), CARD_ROW_MAPPER)));
+			DataAccessUtils.singleResult(
+				jdbcTemplate.query(sql, Map.of("id", id, "columnId", columnId), CARD_ROW_MAPPER)));
 	}
 
 	public List<Card> findAllByColumnId(Long columnId) {
@@ -75,37 +76,38 @@ public class CardRepository {
 		return jdbcTemplate.update(sql, Map.of("columnId", columnId));
 	}
 
-	public int updatePosition(Long id, Long columnId, Long changedPosition ) {
+	public int updatePosition(Long id, Long columnId, Long changedPosition) {
 		String sql = "UPDATE card SET column_id = :columnId, position = :changedPosition WHERE id = :id";
 		return jdbcTemplate.update(sql, Map.of("id", id, "columnId", columnId, "changedPosition", changedPosition));
 	}
 
-	public List<Long> findRankingById (Long columnId,Long topCardId,Long bottomCardId) {
+	public List<Long> findRankingById(Long columnId, Long topCardId, Long bottomCardId) {
 		String sql = "SELECT ranking "
 			+ "FROM ( "
 			+ "  SELECT id, RANK() OVER (ORDER BY position ASC) AS ranking "
 			+ "  FROM card where column_id = :columnId"
 			+ ") AS ranking "
 			+ "WHERE id = :topCardId or id = :bottomCardId ";
-		return jdbcTemplate.query(sql, Map.of("columnId",columnId,"topCardId",topCardId, "bottomCardId",bottomCardId),RANK_ROW_MAPPER);
+		return jdbcTemplate.query(sql,
+			Map.of("columnId", columnId, "topCardId", topCardId, "bottomCardId", bottomCardId), RANK_ROW_MAPPER);
 	}
 
 	public Boolean isMax(Long columnId, Long id) {
-		String sql ="SELECT "
+		String sql = "SELECT "
 			+ " CASE WHEN position = "
 			+ " (SELECT MAX(position) FROM card where column_id = :columnId ) "
 			+ " THEN 1 ELSE 0 END AS is_max_position "
 			+ " FROM card WHERE id = :id";
-		return jdbcTemplate.queryForObject(sql,Map.of("columnId", columnId, "id", id), Boolean.class);
+		return jdbcTemplate.queryForObject(sql, Map.of("columnId", columnId, "id", id), Boolean.class);
 	}
 
 	public Boolean isMin(Long columnId, Long id) {
-		String sql ="SELECT "
+		String sql = "SELECT "
 			+ " CASE WHEN position = "
 			+ " (SELECT MIN(position) FROM card where column_id = :columnId ) "
 			+ " THEN 1 ELSE 0 END AS is_min_position "
 			+ " FROM card WHERE id = :id";
-		return jdbcTemplate.queryForObject(sql,Map.of("columnId", columnId, "id", id), Boolean.class);
+		return jdbcTemplate.queryForObject(sql, Map.of("columnId", columnId, "id", id), Boolean.class);
 	}
 
 	public int delete(Long id) {
@@ -119,5 +121,9 @@ public class CardRepository {
 	private static final RowMapper<Long> RANK_ROW_MAPPER = (rs, rowNum) ->
 		rs.getLong("ranking");
 
+	public Boolean existsInColumn(Long columnId) {
+		String sql = "SELECT EXISTS(SELECT 1 FROM cards WHERE column_id = :columnId)";
+		return jdbcTemplate.queryForObject(sql, Map.of("columnId", columnId), Boolean.class);
+	}
 }
 

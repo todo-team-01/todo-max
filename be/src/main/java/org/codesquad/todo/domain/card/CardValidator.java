@@ -31,13 +31,13 @@ public class CardValidator {
 		}
 	}
 
-	public void validateMaxCardId(Long columnId, Long id){
+	public void validateMaxCardId(Long columnId, Long id) {
 		if (!cardRepository.isMax(columnId, id)) {
 			throw new InvalidCardException();
 		}
 	}
 
-	public void validateMinCardId(Long columnId, Long id){
+	public void validateMinCardId(Long columnId, Long id) {
 		if (!cardRepository.isMin(columnId, id)) {
 			throw new InvalidCardException();
 		}
@@ -46,6 +46,12 @@ public class CardValidator {
 	public void validateSequentialCards(Long columnId, Long topCardId, Long bottomCardId) {
 		List<Long> rankings = cardReader.findRankingById(columnId, topCardId, bottomCardId);
 		if (rankings.get(1) - rankings.get(0) != 1) {
+			throw new InvalidCardException();
+		}
+	}
+
+	public void validateNoCardInColumn(Long columnId) {
+		if (cardRepository.existsInColumn(columnId)) {
 			throw new InvalidCardException();
 		}
 	}

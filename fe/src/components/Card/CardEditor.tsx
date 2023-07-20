@@ -3,7 +3,7 @@ import { COLOR_VARIANTS } from "@constants/colors";
 import { Medium } from "@constants/font";
 import { css } from "@emotion/react";
 import { useFetch } from "hooks/useFetch";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CardData } from "./Card";
 
 interface CardEditorProps {
@@ -23,7 +23,16 @@ export const CardEditor = ({
 }: CardEditorProps) => {
   const [title, setTitle] = useState(cardData?.cardTitle || "");
   const [content, setContent] = useState(cardData?.cardContent || "");
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   const isAllFilled = !!title && !!content;
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height =
+        textAreaRef.current.scrollHeight + "px";
+    }
+  }, [content]);
 
   const { fetch: fetchAdd } = useFetch({
     url: "/api/cards",
@@ -74,7 +83,9 @@ export const CardEditor = ({
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        height: "100%",
+        minHeight: "88px",
+        height: "auto",
+        gap: "8px",
       }}
     >
       <div css={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -88,19 +99,23 @@ export const CardEditor = ({
             Medium.R
           )}
           type="text"
+          maxLength={25}
           placeholder={"제목을 입력하세요"}
           value={title}
           onChange={handleTitleChange}
         />
         <textarea
+          ref={textAreaRef}
           css={css(
             {
               border: "none",
               height: "17px",
+              boxSizing: "border-box",
               color: COLOR_VARIANTS.textDefault,
             },
             Medium.R
           )}
+          maxLength={500}
           placeholder={"내용을 입력하세요"}
           value={content}
           onChange={handleContentChange}

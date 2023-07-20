@@ -129,7 +129,7 @@ export const Card = memo(
 export const cardStyle = () => {
   return css`
     width: 300px;
-    height: 88px;
+    height: auto;
     padding: 16px;
     ${radius.radius8}
     ${dropShadow.normal}

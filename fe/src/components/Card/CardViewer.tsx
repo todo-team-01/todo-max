@@ -20,7 +20,12 @@ export const CardViewer = ({
 
   return (
     <div
-      css={{ display: "flex", justifyContent: "space-between", height: "100%" }}
+      css={{
+        display: "flex",
+        justifyContent: "space-between",
+        minHeight: "88px",
+        height: "auto",
+      }}
     >
       <div
         css={{
@@ -29,23 +34,38 @@ export const CardViewer = ({
           justifyContent: "space-between",
         }}
       >
-        <div css={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div
+          css={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            overflow: "hidden",
+          }}
+        >
           <Text
-            css={{ height: "17px", color: COLOR_VARIANTS.textStrong }}
+            css={{
+              height: "auto",
+              wordBreak: "break-word",
+              whiteSpace: "pre-wrap",
+            }}
             typography="displayBold14"
           >
             {cardTitle}
           </Text>
 
           <Text
-            css={{ height: "17px", color: COLOR_VARIANTS.textDefault }}
+            css={{
+              height: "auto",
+              wordBreak: "break-word",
+              whiteSpace: "pre-wrap",
+            }}
             typography="displayBold14"
           >
             {cardContent}
           </Text>
         </div>
         <Text
-          css={{ color: COLOR_VARIANTS.textDefault }}
+          css={{ color: COLOR_VARIANTS.textDefault, marginTop: "8px" }}
           typography="displayBold12"
         >
           author by {writer}

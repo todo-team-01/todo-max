@@ -122,7 +122,7 @@ public class CardRepository {
 		rs.getLong("ranking");
 
 	public Boolean existsInColumn(Long columnId) {
-		String sql = "SELECT EXISTS(SELECT 1 FROM cards WHERE column_id = :columnId)";
+		String sql = "SELECT EXISTS(SELECT 1 FROM card WHERE column_id = :columnId)";
 		return jdbcTemplate.queryForObject(sql, Map.of("columnId", columnId), Boolean.class);
 	}
 }

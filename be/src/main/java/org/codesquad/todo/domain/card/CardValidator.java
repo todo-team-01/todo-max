@@ -2,6 +2,7 @@ package org.codesquad.todo.domain.card;
 
 import java.util.List;
 
+import org.codesquad.todo.config.CardInvalidSequentialException;
 import org.codesquad.todo.config.ColumnNotFoundException;
 import org.codesquad.todo.config.InvalidCardException;
 import org.codesquad.todo.domain.column.ColumnValidator;
@@ -45,6 +46,10 @@ public class CardValidator {
 
 	public void validateSequentialCards(Long columnId, Long topCardId, Long bottomCardId) {
 		List<Long> rankings = cardReader.findRankingById(columnId, topCardId, bottomCardId);
+		if (rankings.size() < 2) {
+			throw new CardInvalidSequentialException();
+		}
+
 		if (rankings.get(1) - rankings.get(0) != 1) {
 			throw new InvalidCardException();
 		}

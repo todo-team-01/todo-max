@@ -96,4 +96,20 @@ class CardManagerTest {
 		assertThat(updated).isEqualTo(3);
 	}
 
+	@DisplayName("빈 컬럼으로 카드 이동 시 카드의 position을 1024로 할당한다.")
+	@Test
+	void moveToEmptyColumn() {
+		// given
+		given(cardReader.findById(1L))
+			.willReturn(new Card(1L, "이동할 카드", "이동할 카드", 1L, 1024L));
+
+		given(cardRepository.updatePosition(1L, 2L, 1024L)).willReturn(1);
+
+		// when
+		int updated = cardManager.move(1L, 2L, null, null);
+
+		// then
+		assertThat(updated).isEqualTo(1);
+	}
+
 }

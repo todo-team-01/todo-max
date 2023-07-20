@@ -59,15 +59,23 @@ export const Card = memo(
     };
 
     const onMouseDownHandler = (e: React.MouseEvent) => {
-      e.preventDefault();
-      if ((e.target as Element).tagName !== "BUTTON") {
+      const canMouseDown =
+        status === "viewer" && (e.target as Element)?.tagName !== "BUTTON";
+
+      if (canMouseDown) {
+        e.preventDefault();
         setIsMouseDown(true);
       }
     };
 
     const onMouseMoveHandler = (e: React.MouseEvent) => {
-      e.preventDefault();
-      if ((e.target as Element).tagName !== "BUTTON" && isMouseDown) {
+      const canMouseMove =
+        status === "viewer" &&
+        (e.target as Element)?.tagName !== "BUTTON" &&
+        isMouseDown;
+
+      if (canMouseMove) {
+        e.preventDefault();
         setCloneCard(cardData, { x: e.clientX, y: e.clientY });
         setIsDragging(true);
       }

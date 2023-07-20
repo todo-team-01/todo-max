@@ -5,6 +5,7 @@ import { CardData } from "./Card/Card";
 import { CloneCard } from "./Card/CloneCard";
 import Column from "./Column";
 import { ColumnType } from "./Column/Column";
+import { FAB } from "./FAB";
 
 export interface Position {
   x: number;
@@ -155,7 +156,7 @@ export const Main = () => {
   return (
     <div
       ref={mainRef}
-      css={{ display: "flex", gap: "24px" }}
+      css={{ width: "90%", display: "flex", gap: "24px" }}
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}
     >
@@ -178,6 +179,7 @@ export const Main = () => {
       {cloneCardData !== undefined && (
         <CloneCard cardData={cloneCardData} initialPosition={initialPosition} />
       )}
+      <FAB onColumnChanged={onCardChanged} />
     </div>
   );
 };

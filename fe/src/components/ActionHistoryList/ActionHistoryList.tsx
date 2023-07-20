@@ -98,7 +98,7 @@ export const ActionHistoryList: React.FC<{ onClose: () => void }> = ({
 
 const RIGHT_POSITION = {
   OPEN: 0,
-  CLOSE: -(350 + window.innerWidth / 10),
+  CLOSE: -(350 + window.innerWidth / 20),
 };
 
 const emptyTextStyle = {

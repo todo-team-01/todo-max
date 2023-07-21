@@ -1,22 +1,17 @@
 package org.codesquad.todo.domain.card;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 @Component
 public class CardManager {
 	private final CardRepository cardRepository;
 	private final CardReader cardReader;
+	private final CardValidator cardValidator;
 
-	public CardManager(CardRepository cardRepository, CardReader cardReader) {
+	public CardManager(CardRepository cardRepository, CardReader cardReader, CardValidator cardValidator) {
 		this.cardRepository = cardRepository;
 		this.cardReader = cardReader;
-	}
-
-	public int updatePrevCardId(Long updateTargetId, Long prevCardId) {
-		Card findNextCard = cardReader.findById(updateTargetId);
-		return cardRepository.update(findNextCard.createInstanceWithPrevId(prevCardId));
+		this.cardValidator = cardValidator;
 	}
 
 	public int updateCard(Long id, String title, String content) {
@@ -24,23 +19,38 @@ public class CardManager {
 		return cardRepository.update(card.createInstanceWithTitleAndContent(title, content));
 	}
 
-	public int updateCardBeforeDelete(Long id) {
-		List<Card> cards = cardReader.findWithChildById(id);
+	public int move(Long cardId, Long columnId, Long topCardId, Long bottomCardId) {
+		cardValidator.validateColumn(columnId);
+		Long validId = cardReader.findById(cardId).getId();
 
-		if (cards.size() == 2) {
-			int cardToDeleteIndex = 0;
-			int childCardIndex = 0;
-			for (int i = 0; i < cards.size(); i++) {
-				if (cards.get(i).getId().equals(id)) {
-					cardToDeleteIndex = i;
-				} else {
-					childCardIndex = i;
-				}
-			}
-			return cardRepository.updateBeforeDelete(cards.get(childCardIndex).getId(),
-				cards.get(cardToDeleteIndex).getPrevCardId());
+		if (topCardId == null && bottomCardId == null) {
+			cardValidator.validateNoCardInColumn(columnId);
+			return cardRepository.updatePosition(validId, columnId, 1024L);
 		}
 
-		return 0;
+		if (topCardId == null) {
+			Long bottomPosition = cardReader.findByIdAndColumn(bottomCardId, columnId).getPosition();
+			cardValidator.validateMaxCardId(columnId, bottomCardId);
+			return cardRepository.updatePosition(validId, columnId, bottomPosition + 1024);
+		}
+
+		Long topPosition = cardReader.findByIdAndColumn(topCardId, columnId).getPosition();
+
+		if (bottomCardId == null) {
+			cardValidator.validateMinCardId(columnId, topCardId);
+			return cardRepository.updatePosition(validId, columnId, topPosition / 2);
+		}
+
+		cardValidator.validateSequentialCards(columnId, topCardId, bottomCardId);
+
+		Long bottomPosition = cardReader.findByIdAndColumn(bottomCardId, columnId).getPosition();
+		Long newPosition = (topPosition + bottomPosition) / 2;
+		int updated = cardRepository.updatePosition(validId, columnId, newPosition);
+
+		if (topPosition - newPosition == 1 || newPosition - bottomPosition == 1) {
+			return cardRepository.refreshPositionsByColumnId(columnId);
+		}
+
+		return updated;
 	}
 }

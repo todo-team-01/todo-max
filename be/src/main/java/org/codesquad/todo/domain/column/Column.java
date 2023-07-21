@@ -9,10 +9,6 @@ public class Column {
 		this.name = name;
 	}
 
-	public Column createInstanceWithId(Long id) {
-		return new Column(id, this.name);
-	}
-
 	public Long getId() {
 		return id;
 	}

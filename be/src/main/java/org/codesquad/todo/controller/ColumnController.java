@@ -6,7 +6,6 @@ import org.codesquad.todo.controller.dto.ColumnCardResponseDTO;
 import org.codesquad.todo.controller.dto.ColumnSaveRequestDTO;
 import org.codesquad.todo.controller.dto.ColumnSaveResponseDTO;
 import org.codesquad.todo.controller.dto.ColumnUpdateRequestDTO;
-import org.codesquad.todo.domain.column.Column;
 import org.codesquad.todo.domain.column.ColumnService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,9 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 public class ColumnController {
 	private final ColumnService columnService;
 
@@ -32,8 +33,8 @@ public class ColumnController {
 
 	@PostMapping("/columns")
 	public ResponseEntity<ColumnSaveResponseDTO> saveColumn(@RequestBody ColumnSaveRequestDTO columnSaveRequestDTO) {
-		Column savedColumn = columnService.save(columnSaveRequestDTO.toColumn());
-		return ResponseEntity.ok().body(ColumnSaveResponseDTO.from(savedColumn));
+		return ResponseEntity.ok()
+			.body(new ColumnSaveResponseDTO(columnService.save(columnSaveRequestDTO.toColumn())));
 	}
 
 	@PutMapping("/columns/{id}")

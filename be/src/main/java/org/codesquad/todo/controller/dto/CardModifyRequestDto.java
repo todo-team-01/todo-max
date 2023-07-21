@@ -1,22 +1,22 @@
 package org.codesquad.todo.controller.dto;
 
 public class CardModifyRequestDto {
-	private String title;
-	private String content;
+	private String changedCardTitle;
+	private String changedCardContent;
 
 	public CardModifyRequestDto() {
 	}
 
-	public CardModifyRequestDto(String title, String content) {
-		this.title = title;
-		this.content = content;
+	public CardModifyRequestDto(String changedCardTitle, String changedCardContent) {
+		this.changedCardTitle = changedCardTitle;
+		this.changedCardContent = changedCardContent;
 	}
 
-	public String getTitle() {
-		return this.title;
+	public String getChangedCardTitle() {
+		return this.changedCardTitle;
 	}
 
-	public String getContent() {
-		return this.content;
+	public String getChangedCardContent() {
+		return this.changedCardContent;
 	}
 }

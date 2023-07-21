@@ -1,0 +1,49 @@
+# TO-DO API
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+## 칼럼 생성
+
+### 요청
+
+include::{snippets}/columns/save/http-request.adoc[]
+include::{snippets}/columns/save/request-fields.adoc[]
+
+### 응답
+
+include::{snippets}/columns/save/http-response.adoc[]
+include::{snippets}/columns/save/response-fields.adoc[]
+
+## 칼럼 및 카드 전체 조회
+
+### 요청
+
+include::{snippets}/columns/findAll/http-request.adoc[]
+
+### 응답
+
+include::{snippets}/columns/findAll/http-response.adoc[]
+include::{snippets}/columns/findAll/response-fields.adoc[]
+
+## 칼럼 수정
+
+### 요청
+
+include::{snippets}/columns/update/http-request.adoc[]
+include::{snippets}/columns/update/request-fields.adoc[]
+
+### 응답
+
+include::{snippets}/columns/update/http-response.adoc[]
+
+## 칼럼 삭제
+
+### 요청
+include::{snippets}/columns/delete/http-request.adoc[]
+
+### 응답
+
+include::{snippets}/columns/delete/http-response.adoc[]

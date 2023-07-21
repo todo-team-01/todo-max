@@ -5,20 +5,18 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 
 import org.codesquad.todo.util.DatabaseCleaner;
+import org.codesquad.todo.util.RepositoryTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-@JdbcTest
+@RepositoryTest
 public class ColumnRepositoryTest {
 	private ColumnRepository columnRepository;
 	private DatabaseCleaner databaseCleaner;
-	private Column 내일_할일;
-	private Column 오늘_할일;
-	private Column 완료한_일;
 
 	@Autowired
 	public ColumnRepositoryTest(JdbcTemplate jdbcTemplate) {
@@ -29,44 +27,46 @@ public class ColumnRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		databaseCleaner.execute();
-		내일_할일 = columnRepository.save(new Column(null, "내일 할 일"));
-		오늘_할일 = columnRepository.save(new Column(null, "오늘 할일"));
-		완료한_일 = columnRepository.save(new Column(null, "완료한 일"));
 	}
 
 	@DisplayName("DB에 저장된 칼럼들을 리스트 형태로 반환한다.")
 	@Test
 	void findAll() {
 		// given
+		columnRepository.save(new Column(null, "오늘할 일"));
+		columnRepository.save(new Column(null, "해야할 일"));
+
 
 		// when
 		List<Column> columns = columnRepository.findAll();
 
 		// then
-		assertThat(columns.size()).isEqualTo(3);
+		assertThat(columns.size()).isEqualTo(2);
 	}
 
 	@DisplayName("DB에 이름이 있는 칼럼을 저장한다.")
 	@Test
 	void save() {
 		// given
-		Column 새로운_일 = new Column(null, "새로운_일");
+		Column column = new Column(null, "새로운_일");
 
 		// when
-		Column savedColumn = columnRepository.save(새로운_일);
+		Long actual = columnRepository.save(column);
 
 		// then
-		assertThat(savedColumn.getId()).isEqualTo(4L);
-		assertThat(savedColumn.getName()).isEqualTo(새로운_일.getName());
+		Assertions.assertAll(
+			() -> assertThat(actual).isEqualTo(1L)
+		);
 	}
 
 	@DisplayName("DB에 칼럼을 저장하고 저장한 칼럼이 있는지 확인한다.")
 	@Test
 	void exist() {
 		// given
+		Long savedId = columnRepository.save(new Column(null, "새로운 일"));
 
 		// when
-		Boolean exist = columnRepository.exist(내일_할일.getId());
+		Boolean exist = columnRepository.exist(savedId);
 
 		// then
 		assertThat(exist).isTrue();
@@ -76,7 +76,8 @@ public class ColumnRepositoryTest {
 	@Test
 	void update() {
 		// given
-		Column updateColumn = new Column(오늘_할일.getId(), "변경된 오늘 할일");
+		Long savedId = columnRepository.save(new Column(null, "새로운 일"));
+		Column updateColumn = new Column(savedId, "변경된 오늘 할일");
 
 		// when
 		int actual = columnRepository.update(updateColumn);
@@ -89,12 +90,12 @@ public class ColumnRepositoryTest {
 	@Test
 	void delete() {
 		// given
+		Long savedId = columnRepository.save(new Column(null, "새로운 일"));
 
 		// when
-		int actual = columnRepository.delete(내일_할일.getId());
+		int actual = columnRepository.delete(1L);
 
 		// then
 		assertThat(actual).isEqualTo(1);
 	}
-
 }

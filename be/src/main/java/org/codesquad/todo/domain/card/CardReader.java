@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CardReader {
-
 	private final CardRepository cardRepository;
 
 	public CardReader(CardRepository cardRepository) {
@@ -23,8 +22,12 @@ public class CardReader {
 		return cardRepository.findAllByColumnId(columnId);
 	}
 
-	public List<Card> findWithChildById(Long cardId) {
-		return cardRepository.findWithChildById(cardId);
+	public Card findByIdAndColumn(Long id, Long columnId) {
+		return cardRepository.findByIdAndColumn(id,columnId)
+			.orElseThrow(CardNotFoundException::new);
 	}
 
+	public List<Long> findRankingById (Long columnId,Long topCardId,Long bottomCardId) {
+		return cardRepository.findRankingById(columnId,topCardId,bottomCardId);
+	}
 }

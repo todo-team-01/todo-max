@@ -1,7 +1,5 @@
 package org.codesquad.todo.domain.card;
 
-import java.util.Objects;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +16,8 @@ public class CardService {
 		this.cardManager = cardManager;
 	}
 
-	public Card saveCard(Card card, Long nextCardId) {
-		Card newCard = cardAppender.append(card);
-
-		if (Objects.nonNull(nextCardId)) {
-			cardManager.updatePrevCardId(nextCardId, newCard.getId());
-		}
-
-		return newCard;
+	public Long saveCard(Card card) {
+		return cardAppender.append(card);
 	}
 
 	public int modifyCard(Long id, String title, String content) {
@@ -33,9 +25,11 @@ public class CardService {
 	}
 
 	public int deleteCardById(Long id) {
-		cardManager.updateCardBeforeDelete(id);
 		return cardRemover.delete(id);
 	}
 
+	public int moveCard(Long id, Long columnId, Long topCardId, Long bottomCardId) {
+		return cardManager.move(id, columnId, topCardId, bottomCardId);
+	}
 }
 

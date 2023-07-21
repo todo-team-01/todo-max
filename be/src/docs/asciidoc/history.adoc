@@ -1,0 +1,27 @@
+# TO-DO API
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+## 사용자 기록 전체 조회
+
+### 요청
+
+include::{snippets}/histories/findAll/http-request.adoc[]
+
+### 응답
+
+include::{snippets}/histories/findAll/http-response.adoc[]
+include::{snippets}/histories/findAll/response-fields.adoc[]
+
+## 사용자 기록 전체 삭제
+
+### 요청
+
+include::{snippets}/histories/deleteAll/http-request.adoc[]
+
+### 응답
+
+include::{snippets}/histories/deleteAll/http-response.adoc[]

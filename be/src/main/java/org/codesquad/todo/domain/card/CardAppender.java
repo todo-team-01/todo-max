@@ -12,7 +12,7 @@ public class CardAppender {
 		this.cardValidator = cardValidator;
 	}
 
-	public Card append(Card card) {
+	public Long append(Card card) {
 		cardValidator.verifyCard(card);
 		return cardRepository.save(card);
 	}

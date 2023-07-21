@@ -1,23 +1,23 @@
 package org.codesquad.todo.domain.card;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
 import org.codesquad.todo.util.DatabaseCleaner;
+import org.codesquad.todo.util.RepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 
-@JdbcTest
+@RepositoryTest
 public class CardRepositoryTest {
 	private CardRepository cardRepository;
 	private DatabaseCleaner databaseCleaner;
-	private Card SECOND_CARD;
-	private Card FIRST_CARD;
 
 	@Autowired
 	public CardRepositoryTest(JdbcTemplate jdbcTemplate) {
@@ -28,170 +28,204 @@ public class CardRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		databaseCleaner.execute();
-		FIRST_CARD = cardRepository.save(new Card(null, "카드 등록 구현", "카드 등록", 1L, 1L, 2L));
-		SECOND_CARD = cardRepository.save(new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null));
 	}
 
-	@DisplayName("카드를 저장할 때 카드의 정보들을 입력하면 저장하고 카드를 반환한다.")
+	@DisplayName("카드를 저장하고 저장한 카드의 아이디를 반환한다.")
 	@Test
 	void save() {
 		// given
-		Card saveCard = new Card(null, "테스트", "내용", 1L, 1L, 2L);
+		Card card = new Card(null, "테스트 제목", "내용", 1L, null);
 
 		// when
-		Card actual = cardRepository.save(saveCard);
+		Long actual = cardRepository.save(card);
 
 		// then
-		assertThat(actual.getId()).isEqualTo(3L);
-		assertThat(actual).usingRecursiveComparison()
-			.ignoringFields("id")
-			.isEqualTo(saveCard);
+		assertThat(actual).isEqualTo(1L);
 	}
 
 	@DisplayName("카드를 조회할 때 카드의 아이디를 입력하면 카드를 반환한다.")
 	@Test
 	void findById() {
 		// given
+		Card card = new Card(null, "테스트", "내용", 1L, null);
+		Long savedId = cardRepository.save(card);
 
 		// when
-		Card actual = cardRepository.findById(SECOND_CARD.getId())
+		Card actual = cardRepository.findById(savedId)
 			.orElseThrow();
 
 		// then
-		assertThat(actual.getId()).isEqualTo(2L);
-		assertThat(actual).usingRecursiveComparison()
-			.isEqualTo(SECOND_CARD);
+		assertAll(
+			() -> assertThat(actual.getId()).isEqualTo(1L),
+			() -> assertThat(actual.getPosition()).isEqualTo(1024L),
+			() -> assertThat(actual).usingRecursiveComparison()
+				.ignoringFields("id", "position")
+				.isEqualTo(card)
+		);
 	}
 
 	@DisplayName("카드 전체를 조회할 때 컬럼 아이디를 입력하면 해당 컬럼 아이디를 가지고 있는 카드들을 반환한다.")
 	@Test
 	void findAllByColumnId() {
 		// given
-		Long columnId = 1L;
+		Card card = new Card(null, "테스트", "내용", 1L, null);
+		Card card2 = new Card(null, "테스트2", "내용2", 1L, null);
+		Long savedId = cardRepository.save(card);
+		Long savedId2 = cardRepository.save(card2);
 
 		// when
-		List<Card> actual = cardRepository.findAllByColumnId(columnId);
+		List<Card> actual = cardRepository.findAllByColumnId(1L);
 
 		// then
 		assertThat(actual.size()).isEqualTo(2L);
-		assertThat(actual).usingRecursiveComparison()
-			.isEqualTo(List.of(FIRST_CARD, SECOND_CARD));
 	}
 
 	@DisplayName("카드를 수정할 때 수정할 카드 정보들을 입력하면 수정이 되고 수정한 카드들의 수를 반환한다.")
 	@Test
 	void modify() {
 		//given
+		Long savedId = cardRepository.save(new Card(null, "테스트", "내용", 1L, null));
 
 		//when
-		Card updateCard = new Card(SECOND_CARD.getId(), "변경 후 타이틀", "변경 후 내용", 1L, 1L, null);
+		Card updateCard = new Card(savedId, "변경 후 타이틀", "변경 후 내용", 1L, 1L);
 		int updatedCount = cardRepository.update(updateCard);
 
 		//then
-		Card findCard = cardRepository.findById(SECOND_CARD.getId()).orElseThrow();
-		assertThat(updatedCount).isEqualTo(1L);
-		assertThat(findCard).usingRecursiveComparison()
-			.isEqualTo(updateCard);
+		Card findCard = cardRepository.findById(savedId).orElseThrow();
+
+		assertAll(
+			() -> assertThat(updatedCount).isEqualTo(1L),
+			() -> assertThat(findCard).usingRecursiveComparison()
+				.isEqualTo(updateCard)
+		);
 	}
 
-	@DisplayName("해당하는 ID의 카드가 존재한다면 삭제하고 1을 반환한다.")
+	@DisplayName("해당 컬럼 내 모든 카드의 포지션 간격을 1024로 초기화한다.")
 	@Test
-	void deleteExistentCard() {
+	void refreshPositionsByColumnId() {
 		// given
-		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		Card savedCard = cardRepository.save(card);
+		Card card1 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card2 = new Card(null, "제목2", "내용2", 1L, null);
+		Card card3 = new Card(null, "제목3", "내용3", 1L, null);
+		Long savedId1 = cardRepository.save(card1);
+		Long savedId2 = cardRepository.save(card2);
+		Long savedId3 = cardRepository.save(card3);
+
+		Card updateCard1 = new Card(savedId1, "제목1", "내용1", 1L, 100L);
+		Card updateCard2 = new Card(savedId2, "제목2", "내용2", 1L, 50L);
+		Card updateCard3 = new Card(savedId3, "제목3", "내용3", 1L, 1L);
+		cardRepository.update(updateCard1);
+		cardRepository.update(updateCard2);
+		cardRepository.update(updateCard3);
+
+		List<Card> cardsBeforeRefresh = cardRepository.findAllByColumnId(1L);
 
 		// when
-		int deleted = cardRepository.delete(savedCard.getId());
+		int updated = cardRepository.refreshPositionsByColumnId(1L);
+		List<Card> cardsAfterRefresh = cardRepository.findAllByColumnId(1L);
 
 		// then
-		assertThat(deleted).isEqualTo(1);
+		assertAll(
+			() -> assertThat(cardsBeforeRefresh).hasSize(3)
+				.extracting("id", "position")
+				.containsExactlyInAnyOrder(
+					tuple(1L, 100L),
+					tuple(2L, 50L),
+					tuple(3L, 1L)),
+			() -> assertThat(updated).isEqualTo(3),
+			() -> assertThat(cardsAfterRefresh).hasSize(3)
+				.extracting("id", "position")
+				.containsExactlyInAnyOrder(
+					tuple(1L, 3072L),
+					tuple(2L, 2048L),
+					tuple(3L, 1024L))
+		);
 	}
 
-	@DisplayName("해당하는 ID의 카드가 존재하지 않는 경우 0을 반환한다.")
+	@DisplayName("카드를 이동 요청 시 position 값을 업데이트한다.")
 	@Test
-	void deleteNonexistentCard() {
-		// when
-		int deleted = cardRepository.delete(3L);
-
-		// then
-		assertThat(deleted).isEqualTo(0);
-	}
-
-	@DisplayName("삭제하려는 카드와 자식 카드를 찾는다.")
-	@Test
-	void findWithChildById() {
+	void updatePosition() {
 		// given
+		Card card = new Card(null, "제목1", "내용1", 1L, null);
+		Long savedId = cardRepository.save(card);
 
 		// when
-		List<Card> cards = cardRepository.findWithChildById(SECOND_CARD.getId());
+		cardRepository.updatePosition(savedId, 2L, 1536L);
+		Card updatedCard = cardRepository.findById(savedId).orElseThrow();
 
 		// then
-		assertThat(cards).hasSize(2)
-			.extracting("id", "prevCardId")
-			.containsExactlyInAnyOrder(
-				tuple(2L, null),
-				tuple(1L, 2L)
-			);
+		assertThat(updatedCard).extracting("id", "columnId", "position")
+			.containsExactly(1L, 2L, 1536L);
 	}
 
-	@DisplayName("자식 카드가 없는 카드를 찾는다.")
+	@DisplayName("columnId와 id 를 입력해서 해당 id의 position 값이 최댓값이면 true 를 리턴  ")
 	@Test
-	void findWithNoChildById() {
+	void isMax() {
 		// given
+		Card card1 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card2 = new Card(null, "제목1", "내용1", 1L, null);
+		cardRepository.save(card1);
+		Long savedId2 = cardRepository.save(card2);
 
 		// when
-		List<Card> cards = cardRepository.findWithChildById(FIRST_CARD.getId());
+		Boolean max = cardRepository.isMax(1L,savedId2);
 
 		// then
-		assertThat(cards).hasSize(1)
-			.extracting("id", "prevCardId")
-			.containsExactlyInAnyOrder(
-				tuple(1L, 2L)
-			);
+		assertThat(max).isTrue();
 	}
 
-	@DisplayName("최상단에 위치한 카드를 삭제할 때 자신의 아래에 있는 카드의 prevCardId를 null로 변경한다.")
+	@DisplayName("columnId와 id 를 입력해서 해당 id의 position 값이 최소값이면 true 를 리턴")
 	@Test
-	void updateBeforeDeleteWithNull() {
+	void isMin() {
 		// given
-
+		Card card1 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card2 = new Card(null, "제목1", "내용1", 1L, null);
+		Long savedId1 =cardRepository.save(card1);
+		 cardRepository.save(card2);
 		// when
-		int updated = cardRepository.updateBeforeDelete(FIRST_CARD.getId(), SECOND_CARD.getPrevCardId());
-		List<Card> cards = cardRepository.findAll();
+		Boolean min = cardRepository.isMin(1L,savedId1);
 
 		// then
-		assertThat(updated).isEqualTo(1);
-		assertThat(cards).hasSize(2)
-			.extracting("id", "prevCardId")
-			.containsExactlyInAnyOrder(
-				tuple(1L, null),
-				tuple(2L, null)
-			);
+		assertThat(min).isTrue();
+
 	}
 
-	@DisplayName("자식 카드의 부모 카드를 삭제하려는 카드의 부모 카드로 변경한다.")
+	@DisplayName("입력 받은 컬럼에 있는 top,bottom 카드를 입력받아 순위가 담긴 리스트를 반환받는다 ")
 	@Test
-	void updateBeforeDelete() {
+	void findRankingById() {
 		// given
-		Card card3 = new Card(null, "변경 후 타이틀", "변경 후 내용", 1L, 1L, null);
-		cardRepository.save(card3);
-		SECOND_CARD = SECOND_CARD.createInstanceWithPrevId(3L);
-		cardRepository.update(SECOND_CARD);
+		Card card1 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card2 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card3 = new Card(null, "제목1", "내용1", 1L, null);
+		Card card4 = new Card(null, "제목1", "내용1", 2L, null);
+		Long savedId1 =cardRepository.save(card1);
+		Long savedId2 =cardRepository.save(card2);
+		Long savedId3 =cardRepository.save(card3);
+		Long savedId4 =cardRepository.save(card4);
+		// when
+		List<Long> rankings = cardRepository.findRankingById(1L,savedId1,savedId3);
+		//then
+		assertThat(rankings.get(0)).isEqualTo(1L);
+		assertThat(rankings.get(1)).isEqualTo(3L);
+
+	}
+
+	@DisplayName("입력받은 컬럼에 입력받은 아이디를 찾는다 ")
+	@Test
+	void findByIdAndColumn() {
+		// given
+		Card card = new Card(null, "테스트", "내용", 1L, null);
+		Long savedId = cardRepository.save(card);
 
 		// when
-		int updated = cardRepository.updateBeforeDelete(FIRST_CARD.getId(), SECOND_CARD.getPrevCardId());
-		List<Card> cards = cardRepository.findAll();
+		Card actual = cardRepository.findByIdAndColumn(savedId,1L)
+			.orElseThrow();
 
 		// then
-		assertThat(updated).isEqualTo(1);
-		assertThat(cards).hasSize(3)
-			.extracting("id", "prevCardId")
-			.containsExactlyInAnyOrder(
-				tuple(1L, 3L),
-				tuple(2L, 3L),
-				tuple(3L, null)
-			);
+		 assertThat(actual.getId()).isEqualTo(1L);
+		 assertThat(actual.getColumnId()).isEqualTo(1L);
+
 	}
 
 }
+

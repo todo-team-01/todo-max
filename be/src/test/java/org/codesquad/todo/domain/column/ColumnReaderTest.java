@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.codesquad.todo.config.ColumnNotFoundException;
+import org.codesquad.todo.util.ServiceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ServiceTest
 class ColumnReaderTest {
 	@InjectMocks
 	private ColumnReader columnReader;
@@ -66,8 +65,10 @@ class ColumnReaderTest {
 		List<Column> actual = columnReader.findAll();
 
 		// then
-		assertThat(actual.size()).isEqualTo(3L);
-		assertThat(actual).usingRecursiveComparison()
-			.isEqualTo(columns);
+		Assertions.assertAll(
+			() -> assertThat(actual.size()).isEqualTo(3L),
+			() -> assertThat(actual).usingRecursiveComparison()
+				.isEqualTo(columns)
+		);
 	}
 }

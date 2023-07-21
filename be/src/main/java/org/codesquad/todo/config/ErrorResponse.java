@@ -3,11 +3,11 @@ package org.codesquad.todo.config;
 import org.springframework.http.HttpStatus;
 
 public class ErrorResponse {
-	private final HttpStatus httpStatus;
+	private final HttpStatus status;
 	private final String message;
 
-	public ErrorResponse(HttpStatus httpStatus, String message) {
-		this.httpStatus = httpStatus;
+	public ErrorResponse(HttpStatus status, String message) {
+		this.status = status;
 		this.message = message;
 	}
 
@@ -20,7 +20,7 @@ public class ErrorResponse {
 	}
 
 	public int getStatus() {
-		return httpStatus.value();
+		return status.value();
 	}
 
 	public String getMessage() {

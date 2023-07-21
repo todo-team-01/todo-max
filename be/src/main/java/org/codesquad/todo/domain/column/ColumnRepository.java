@@ -22,12 +22,12 @@ public class ColumnRepository {
 		this.jdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
 	}
 
-	public Column save(Column column) {
+	public Long save(Column column) {
 		String sql = "INSERT INTO columns(name) VALUES(:name)";
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		SqlParameterSource parameters = new BeanPropertySqlParameterSource(column);
 		jdbcTemplate.update(sql, parameters, keyHolder);
-		return column.createInstanceWithId(keyHolder.getKey().longValue());
+		return keyHolder.getKey().longValue();
 	}
 
 	public Optional<Column> findById(Long columnId) {

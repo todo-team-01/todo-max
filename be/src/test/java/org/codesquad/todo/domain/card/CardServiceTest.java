@@ -3,15 +3,13 @@ package org.codesquad.todo.domain.card;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import org.codesquad.todo.util.ServiceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ServiceTest
 public class CardServiceTest {
 	@InjectMocks
 	private CardService cardService;
@@ -30,20 +28,14 @@ public class CardServiceTest {
 	void saveCard() {
 		// given
 		Long nextId = 1L;
-		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		given(cardAppender.append(any())).willReturn(card.createInstanceWithId(1L));
-		given(cardManager.updatePrevCardId(any(), any())).willReturn(1);
+		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1024L);
+		given(cardAppender.append(any())).willReturn(1L);
 
 		// when
-		Card actual = cardService.saveCard(card, nextId);
+		Long actual = cardService.saveCard(card);
 
 		// then
-		assertThat(actual.getId()).isEqualTo(1L);
-		assertThat(actual).usingRecursiveComparison()
-			.ignoringFields("id")
-			.isEqualTo(card);
-		then(cardManager).should(Mockito.times(1))
-			.updatePrevCardId(nextId, actual.getId());
+		assertThat(actual).isEqualTo(1L);
 	}
 
 	@DisplayName("카드를 수정할 때 수정할 카드 정보들을 입력하면 수정이 되고 수정한 카드 갯수를 반환한다.")
@@ -66,17 +58,16 @@ public class CardServiceTest {
 	@Test
 	void deleteCard() {
 		// given
-		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1L, null);
-		given(cardAppender.append(any())).willReturn(card.createInstanceWithId(1L));
+		Card card = new Card(null, "Git 사용해 보기", "add, commit", 1L, 1024L);
+		given(cardAppender.append(any())).willReturn(1L);
 		given(cardRemover.delete(any())).willReturn(1);
 
-		Card savedCard = cardService.saveCard(card, null);
+		Long savedId = cardService.saveCard(card);
 
 		// when
-		int deleted = cardService.deleteCardById(savedCard.getId());
+		int deleted = cardService.deleteCardById(savedId);
 
 		// then
 		assertThat(deleted).isEqualTo(1);
 	}
-
 }

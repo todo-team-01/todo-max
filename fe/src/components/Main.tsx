@@ -1,6 +1,6 @@
 import { useFetch } from "hooks/useFetch";
 import _ from "lodash";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { CardData } from "./Card/Card";
 import { CloneCard } from "./Card/CloneCard";
 import Column from "./Column";
@@ -62,14 +62,9 @@ export const Main = () => {
   const { fetch: fetchCardPatch } = useFetch({
     url: `/api/cards/${cloneCardData?.cardId}`,
     method: "patch",
-    body: cardUpdateBody,
   });
 
-  useEffect(() => {
-    updateBodyContent();
-  }, [targetPosition]);
-
-  const updateBodyContent = () => {
+  const getUpdateCardBody = () => {
     if (targetPosition.columnIndex === -1 || targetPosition.cardIndex === -1) {
       return;
     }
@@ -94,7 +89,7 @@ export const Main = () => {
       bottomCardId: bottomCardId,
     };
 
-    setCardUpdateBody(result);
+    return result;
   };
 
   const setCloneCard = useCallback(
@@ -167,9 +162,9 @@ export const Main = () => {
     if (targetPosition.columnIndex !== -1 && targetPosition.cardIndex !== -1) {
       resetCloneCard();
 
-      updateBodyContent();
+      const cardUpdateBody = getUpdateCardBody();
       if (!_.isEmpty(cardUpdateBody)) {
-        await fetchCardPatch();
+        await fetchCardPatch(cardUpdateBody);
         await onCardChanged();
       }
     }

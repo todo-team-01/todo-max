@@ -21,9 +21,6 @@ export const NameEditor = ({
   const { fetch: updateColumnFetch } = useFetch({
     url: `/api/columns/${columnId}`,
     method: "put",
-    body: {
-      changedColumnName: updatedName,
-    },
   });
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +31,7 @@ export const NameEditor = ({
     onNameOutsideClick();
 
     if (columnName !== updatedName) {
-      await updateColumnFetch();
+      await updateColumnFetch({ changedColumnName: updatedName });
       onCardChanged();
     }
   };

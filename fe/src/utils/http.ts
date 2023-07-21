@@ -15,7 +15,7 @@ const handleFetch = async (url: string, options?: RequestInit) => {
 export const http = {
   get: async (url: string) => handleFetch(url),
 
-  post: async (url: string, body?: Record<string, unknown>) => {
+  post: async (url: string, body?: object) => {
     const options: RequestInit = {
       method: "POST",
       headers: defaultHeaders,
@@ -25,7 +25,7 @@ export const http = {
     return handleFetch(url, options);
   },
 
-  put: async (url: string, body?: Record<string, unknown>) => {
+  put: async (url: string, body?: object) => {
     const options: RequestInit = {
       method: "PUT",
       headers: defaultHeaders,

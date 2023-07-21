@@ -7,13 +7,10 @@ export const FAB = ({ onColumnChanged }: { onColumnChanged: () => void }) => {
   const { fetch: columnAddFetch } = useFetch({
     url: "/api/columns",
     method: "post",
-    body: {
-      columnName: "새로운 컬럼",
-    },
   });
 
   const onColumnAdd = async () => {
-    await columnAddFetch();
+    await columnAddFetch({ columnName: "새로운 컬럼" });
     onColumnChanged();
   };
 

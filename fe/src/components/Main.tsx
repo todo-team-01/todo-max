@@ -20,6 +20,7 @@ export interface MoveCardBodyType {
 
 export const Main = () => {
   const mainRef = useRef<HTMLDivElement>(null);
+  const columnRefs = useRef<HTMLDivElement[]>([]);
   const [targetPosition, setTargetPosition] = useState({
     columnIndex: -1,
     cardIndex: -1,
@@ -31,6 +32,7 @@ export const Main = () => {
   });
   const [cloneCardData, setCloneCardData] = useState<CardData>();
   const [cardUpdateBody, setCardUpdateBody] = useState({});
+  const [autoScrollRafId, setAutoScrollRafId] = useState<number | null>(null);
 
   const {
     response: columnList,
@@ -40,6 +42,22 @@ export const Main = () => {
     method: "get",
     autoFetch: true,
   });
+
+  const [cardHeights, setCardHeights] = useState<number[][]>([]);
+
+  useEffect(() => {
+    calculateCardHeights();
+  }, [columnList]);
+
+  const calculateCardHeights = () => {
+    const cardHeights = columnRefs.current.map((column) => {
+      return Array.from(column.children).map(
+        (child) => (child as HTMLElement).offsetHeight
+      );
+    });
+
+    setCardHeights(cardHeights);
+  };
 
   const { fetch: fetchCardPatch } = useFetch({
     url: `/api/cards/${cloneCardData?.cardId}`,
@@ -102,8 +120,6 @@ export const Main = () => {
 
     const columnWidth = 332;
     const columnMargin = 24;
-    const cardHeight = 88;
-    const cardMargin = 10;
 
     // mainRef 영역의 경계를 가져옵니다.
     const mainRect = mainRef.current.getBoundingClientRect();
@@ -124,11 +140,17 @@ export const Main = () => {
       const currentColumn = columnList[columnIndex];
       if (!currentColumn) return;
 
-      // cardIndex를 계산하고 현재 컬럼의 카드 수를 초과하지 않도록 제한합니다.
-      const cardIndex = Math.min(
-        Math.floor((mousePos.y - mainRect.top) / (cardHeight + cardMargin)),
-        currentColumn.cards.length
-      );
+      // cardIndex를 계산합니다.
+      let cardIndex = 0;
+      let sumHeight = 0;
+      while (
+        sumHeight + cardHeights[columnIndex][cardIndex] <
+          mousePos.y - mainRect.top &&
+        cardIndex < currentColumn.cards.length
+      ) {
+        sumHeight += cardHeights[columnIndex][cardIndex];
+        cardIndex++;
+      }
 
       // 마우스 위치가 변경되었을 때에만 mousePosition을 업데이트합니다.
       const isMousePositionChanged =
@@ -153,16 +175,74 @@ export const Main = () => {
     }
   };
 
+  // TODO : scrollLeft, scrollRight은 스크롤이 더 진행될 수 없는 상황에서도
+  //        화면에 좌,우 측 5% 위치에 있다면 반복적으로 실행된다. 최적화가 필요하다
+  const scrollLeft = () => {
+    window.scrollBy(-25, 0);
+    setAutoScrollRafId(window.requestAnimationFrame(scrollLeft));
+  };
+
+  const scrollRight = () => {
+    window.scrollBy(25, 0);
+    setAutoScrollRafId(window.requestAnimationFrame(scrollRight));
+  };
+
+  const handleAutoScroll = (mouseXPosition: number) => {
+    if (!cloneCardData || !mainRef.current) return;
+
+    const vw = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+    const scrollThreshold = 0.05; // 5%
+
+    if (mouseXPosition <= vw * scrollThreshold) {
+      if (autoScrollRafId === null) {
+        setAutoScrollRafId(window.requestAnimationFrame(scrollLeft));
+      }
+    } else if (mouseXPosition >= vw * (1 - scrollThreshold)) {
+      if (autoScrollRafId === null) {
+        setAutoScrollRafId(window.requestAnimationFrame(scrollRight));
+      }
+    } else if (autoScrollRafId !== null) {
+      window.cancelAnimationFrame(autoScrollRafId);
+      setAutoScrollRafId(null);
+    }
+  };
+
+  const combinedOnMouseMove = useCallback(
+    (event: React.MouseEvent) => {
+      onMouseMove(event);
+      handleAutoScroll(event.clientX);
+    },
+    [onMouseMove, handleAutoScroll]
+  );
+
   return (
     <div
+      css={{
+        minWidth: "90%",
+        height: "auto",
+        display: "flex",
+        gap: "24px",
+        position: "absolute",
+        paddingLeft: `${window.innerWidth * 0.05}px`,
+        top: "64px",
+        left: "0px",
+        zIndex: "-1",
+      }}
       ref={mainRef}
-      css={{ width: "90%", display: "flex", gap: "24px" }}
       onMouseUp={onMouseUp}
-      onMouseMove={onMouseMove}
+      onMouseMove={combinedOnMouseMove}
     >
       {columnList &&
         columnList.map(({ columnId, columnName, cards }, index) => (
           <Column
+            ref={(ref) => {
+              if (ref !== null) {
+                columnRefs.current[index] = ref;
+              }
+            }}
             key={columnId}
             columnId={columnId}
             columnName={columnName}

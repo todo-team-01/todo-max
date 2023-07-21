@@ -1,0 +1,50 @@
+# TO-DO API
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+## 카드 생성
+
+### 요청
+
+include::{snippets}/cards/save/http-request.adoc[]
+include::{snippets}/cards/save/request-fields.adoc[]
+
+### 응답
+
+include::{snippets}/cards/save/http-response.adoc[]
+include::{snippets}/cards/save/response-fields.adoc[]
+
+## 카드 수정
+
+### 요청
+
+include::{snippets}/cards/modify/http-request.adoc[]
+include::{snippets}/cards/modify/request-fields.adoc[]
+
+### 응답
+
+include::{snippets}/cards/modify/http-response.adoc[]
+
+## 카드 이동
+
+### 요청
+
+include::{snippets}/cards/move/http-request.adoc[]
+include::{snippets}/cards/move/request-fields.adoc[]
+
+### 응답
+
+include::{snippets}/cards/move/http-response.adoc[]
+
+## 카드 삭제
+
+### 요청
+
+include::{snippets}/cards/delete/http-request.adoc[]
+
+### 응답
+
+include::{snippets}/cards/delete/http-response.adoc[]

@@ -1,73 +1,57 @@
-export type CardAddRequestBody = {
-  columnId: number;
-  cardTitle: string;
-  cardContent: string;
-  nextCardId: number;
+const defaultHeaders = {
+  "Content-Type": "application/json",
 };
 
-export type RequestMap = {
-  "/api/cards": CardAddRequestBody;
-  "/api": undefined;
-};
+const handleFetch = async (url: string, options?: RequestInit) => {
+  const response = await fetch(url, options);
 
-export type RequestBody = RequestMap[keyof RequestMap];
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  return response.json();
+};
 
 export const http = {
-  get: async (url: string) => {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    return response.json();
-  },
+  get: async (url: string) => handleFetch(url),
 
   post: async (url: string, body?: object) => {
-    const option = {
+    const options: RequestInit = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: defaultHeaders,
       body: JSON.stringify(body),
     };
 
-    const response = await fetch(url, option);
-
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    return response.json();
+    return handleFetch(url, options);
   },
 
   put: async (url: string, body?: object) => {
-    const options = {
+    const options: RequestInit = {
       method: "PUT",
+      headers: defaultHeaders,
+      body: JSON.stringify(body),
+    };
+
+    return handleFetch(url, options);
+  },
+
+  delete: async (url: string) => {
+    const options: RequestInit = {
+      method: "DELETE",
+    };
+
+    return handleFetch(url, options);
+  },
+
+  patch: async (url: string, body?: object) => {
+    const options = {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     };
 
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-
-    return response.json();
-  },
-
-  delete: async (url: string) => {
-    const option = {
-      method: "DELETE",
-    };
-
-    const response = await fetch(url, option);
-
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
+    return handleFetch(url, options);
   },
 };

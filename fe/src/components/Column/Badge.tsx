@@ -1,5 +1,5 @@
-import { colors } from "@constants/colors";
-import { typography } from "@constants/font";
+import { Text } from "@components/base/Text";
+import { COLOR_VARIANTS } from "@constants/colors";
 import { radius } from "@constants/objectStyle";
 import { css } from "@emotion/react";
 
@@ -8,13 +8,7 @@ export const Badge = ({ cardCount }: { cardCount: number }) => {
 
   return (
     <div css={badgeStyle(isMoreTwoDigits)}>
-      <span
-        css={{
-          ...typography.display.medium[12],
-        }}
-      >
-        {isMoreTwoDigits ? "99+" : cardCount}
-      </span>
+      <Text>{isMoreTwoDigits ? "99+" : cardCount}</Text>
     </div>
   );
 };
@@ -25,7 +19,7 @@ const badgeStyle = (isMoreTwoDigits: boolean) => css`
   align-items: center;
   height: 1.5rem;
   width: ${isMoreTwoDigits ? "40px" : "1.5rem"};
-  border: 1px solid ${colors.borderDefault};
-  color: ${colors.textWeak};
+  border: 1px solid ${COLOR_VARIANTS.borderDefault};
+  color: ${COLOR_VARIANTS.textWeak};
   ${radius.radius8};
 `;

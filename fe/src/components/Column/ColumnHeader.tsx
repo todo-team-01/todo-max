@@ -1,56 +1,86 @@
-import { Button } from "@components/base/Button";
+import { RemoveModal } from "@components/base/RemoveModal";
 import { Text } from "@components/base/Text";
-import { ClosedIcon } from "@components/icon/ClosedIcon";
-import { PlusIcon } from "@components/icon/PlusIcon";
-import { colors } from "@constants/colors";
-import { typography } from "@constants/font";
+import { useFetch } from "hooks/useFetch";
+import { useState } from "react";
 import { Badge } from "./Badge";
+import { ColumnButtons } from "./ColumnButtons";
+import { NameEditor } from "./NameEditor";
 
 interface ColumnHeaderProps {
   columnId: number;
   columnName: string;
   cardCount: number;
-  handleClickAddCard: () => void;
+  onAddCardClick: () => void;
+  onCardChanged: () => void;
 }
 
 export const ColumnHeader = ({
   columnId,
   columnName,
   cardCount,
-  handleClickAddCard,
+  onAddCardClick,
+  onCardChanged,
 }: ColumnHeaderProps) => {
-  const handleClickRemoveColumn = () => {};
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [status, setStatus] = useState<"viewer" | "editor">("viewer");
+
+  const { fetch: deleteColumnFetch } = useFetch({
+    url: `/api/columns/${columnId}`,
+    method: "delete",
+  });
+
+  const onNameDoubleClick = () => setStatus("editor");
+  const onNameOutsideClick = () => setStatus("viewer");
+
+  const openModal = () => setIsOpenModal(true);
+  const closeModal = () => setIsOpenModal(false);
+
+  const onDeleteColumnClick = async () => {
+    await deleteColumnFetch();
+    closeModal();
+    onCardChanged();
+  };
 
   return (
-    <div
-      css={{
-        display: "flex",
-        justifyContent: "space-between",
-        minWidth: "300px",
-      }}
-    >
-      <div css={{ display: "flex", gap: "4px", alignItems: "center" }}>
-        <Text typography={typography.display.bold[16]} color={colors.textBold}>
-          {columnName}
-        </Text>
-        <Badge cardCount={cardCount} />
+    <div css={headerStyle}>
+      <div css={titleStyle} onDoubleClick={onNameDoubleClick}>
+        {status === "viewer" ? (
+          <>
+            <Text typography="displayBold16" color="textBold">
+              {columnName}
+            </Text>
+            <Badge cardCount={cardCount} />
+          </>
+        ) : (
+          <NameEditor
+            columnId={columnId}
+            columnName={columnName}
+            onNameOutsideClick={onNameOutsideClick}
+            onCardChanged={onCardChanged}
+          />
+        )}
       </div>
-      <div css={{ display: "flex" }}>
-        <Button
-          pattern="icon"
-          onClick={handleClickAddCard}
-          iconHoverColor={colors.surfaceBrand}
-        >
-          <PlusIcon size={24} rgb={colors.textWeak} />
-        </Button>
-        <Button
-          pattern="icon"
-          onClick={handleClickRemoveColumn}
-          iconHoverColor={colors.red}
-        >
-          <ClosedIcon size={24} rgb={colors.textWeak} />
-        </Button>
-      </div>
+      <ColumnButtons
+        onAddButtonClick={onAddCardClick}
+        onDeleteButtonClick={openModal}
+      />
+      <RemoveModal
+        isOpen={isOpenModal}
+        removeHandler={onDeleteColumnClick}
+        closeHandler={closeModal}
+        text={`'${columnName}' 칼럼을 삭제할까요?`}
+      />
     </div>
   );
 };
+
+const headerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  padding: "0 16px",
+  minWidth: "300px",
+  gap: "4px",
+};
+
+const titleStyle = { display: "flex", gap: "8px", alignItems: "center" };
+

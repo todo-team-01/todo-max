@@ -1,12 +1,12 @@
-import { CardData } from "@components/Card";
+import { CardData } from "@components/Card/Card";
 import { faker } from "@faker-js/faker";
 
 export function createRandomCard(cardId: number): CardData {
   return {
     cardId,
-    title: faker.internet.domainName(),
-    content: faker.word.words(),
-    writer: faker.internet.userName(),
+    cardTitle: faker.internet.domainName(),
+    cardContent: faker.word.words(),
+    writer: "web",
   };
 }
 

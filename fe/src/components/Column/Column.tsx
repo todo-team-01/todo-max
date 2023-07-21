@@ -1,50 +1,89 @@
-import { Card, CardData } from "@components/Card";
-import { NewCard } from "@components/NewCard";
-import { useState } from "react";
+import { Card, CardData, cardStyle } from "@components/Card/Card";
+import { CardViewer } from "@components/Card/CardViewer";
+import { NewCard } from "@components/Card/NewCard";
+import { Position } from "@components/Main";
+import React, { useState } from "react";
 import { ColumnHeader } from "./ColumnHeader";
 
-export interface ColumnDataProps {
+interface ColumnProps extends ColumnType {
+  onCardChanged: () => void;
+  setCloneCard: (cardData: CardData, initialPosition: Position) => void;
+  cloneState: {
+    hasClone: boolean;
+    cardIndex: number;
+    cloneCardData: CardData | undefined;
+  };
+}
+
+export interface ColumnType {
   columnId: number;
   columnName: string;
   cards: CardData[];
-  updateColumnList: () => void;
 }
 
-export const Column = ({
-  columnId,
-  columnName,
-  cards,
-  updateColumnList,
-}: ColumnDataProps) => {
-  const [isAdding, setIsAdding] = useState<boolean>(false);
-  const handleClickAddCard = () => setIsAdding((prev) => !prev);
-  const handleClickCancelAdd = () => setIsAdding(false);
-  const cardCount = cards.length;
-  const prevFirstCardId = cards[0]?.cardId;
+export const Column = React.forwardRef(
+  (
+    {
+      columnId,
+      columnName,
+      cards,
+      onCardChanged,
+      setCloneCard,
+      cloneState,
+    }: ColumnProps,
+    ref: React.Ref<HTMLDivElement>
+  ) => {
+    const [isAdding, setIsAdding] = useState<boolean>(false);
+    const onAddCardClick = () => setIsAdding((prev) => !prev);
+    const onAddCancelClick = () => setIsAdding(false);
+    const cardCount = cards.length;
 
-  return (
-    <div>
-      <ColumnHeader
-        columnId={columnId}
-        columnName={columnName}
-        cardCount={cardCount}
-        handleClickAddCard={handleClickAddCard}
-      />
-      {isAdding && (
-        <NewCard
+    const isCloneValid = cloneState.hasClone && cloneState.cloneCardData;
+
+    const GhostCard = (
+      <div css={[cardStyle, { opacity: "0.5" }]}>
+        <CardViewer cardData={cloneState.cloneCardData!} />
+      </div>
+    );
+
+    return (
+      <div
+        ref={ref}
+        css={{
+          width: "332px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
+        <ColumnHeader
           columnId={columnId}
-          handleClickCancelAdd={handleClickCancelAdd}
-          nextCardId={prevFirstCardId}
-          updateColumnList={updateColumnList}
+          columnName={columnName}
+          cardCount={cardCount}
+          onAddCardClick={onAddCardClick}
+          onCardChanged={onCardChanged}
         />
-      )}
-      {cards.map((cardData, index) => (
-        <Card
-          key={`${index}_${cardData.cardId}`}
-          cardData={cardData}
-          updateColumnList={updateColumnList}
-        />
-      ))}
-    </div>
-  );
-};
+        {isAdding && (
+          <NewCard
+            columnId={columnId}
+            onAddCancelClick={onAddCancelClick}
+            onCardChanged={onCardChanged}
+          />
+        )}
+        {cards.map((cardData, index) => (
+          <React.Fragment key={`${index}_${cardData.cardId}`}>
+            {isCloneValid && cloneState.cardIndex === index && GhostCard}
+            <Card
+              key={`${index}_${cardData.cardId}`}
+              cardData={cardData}
+              onCardChanged={onCardChanged}
+              setCloneCard={setCloneCard}
+            />
+          </React.Fragment>
+        ))}
+        {isCloneValid && cloneState.cardIndex === cards.length && GhostCard}
+      </div>
+    );
+  }
+);
+

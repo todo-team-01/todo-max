@@ -1,15 +1,14 @@
-import { colors } from "@constants/colors";
-import { radius } from "@constants/objectStyle";
+import { COLOR_VARIANTS, Color } from "@constants/colors";
 import { css } from "@emotion/react";
 import { ButtonHTMLAttributes } from "react";
 
 type ButtonVariant = "blue" | "red" | "gray" | "transparent";
-type ButtonPattern = "text" | "icon";
+type ButtonPattern = "text" | "icon" | "FAB";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   pattern: ButtonPattern;
-  iconHoverColor?: string;
+  iconHoverColor?: Color;
 }
 
 export const Button = ({
@@ -33,11 +32,11 @@ const buttonStyle = ({
 }: {
   variant?: ButtonVariant;
   pattern: ButtonPattern;
-  iconHoverColor?: string;
+  iconHoverColor?: Color;
 }) => {
   return css`
-    width: ${pattern === "text" ? "132px" : "auto"};
-    height: ${pattern === "text" ? "32px" : "auto"};
+    width: ${WIDTH[pattern]};
+    height: ${HEIGHT[pattern]};
     outline: none;
     padding: 4px;
     display: flex;
@@ -47,34 +46,52 @@ const buttonStyle = ({
       opacity: 0.8;
       & svg,
       path {
-        fill: ${iconHoverColor};
+        fill: ${iconHoverColor && COLOR_VARIANTS[iconHoverColor]};
       }
     }
     &:disabled {
       cursor: default;
       opacity: 0.3;
     }
-    color: ${VARIANTS[variant].color};
-    background: ${VARIANTS[variant].background};
-    ${pattern === "text" && radius.radius8}
+    color: ${BUTTON_VARIANTS[variant].color};
+    background: ${BUTTON_VARIANTS[variant].background};
+    border-radius: ${RADIUS[pattern]};
   `;
 };
 
-const VARIANTS = {
+const RADIUS = {
+  text: "8px",
+  icon: "50%",
+  FAB: "50%",
+};
+
+const WIDTH = {
+  text: "132px",
+  icon: "auto",
+  FAB: "56px",
+};
+
+const HEIGHT = {
+  text: "32px",
+  icon: "auto",
+  FAB: "56px",
+};
+
+const BUTTON_VARIANTS = {
   blue: {
-    color: colors.textWhiteDefault,
-    background: colors.surfaceBrand,
+    color: COLOR_VARIANTS.textWhiteDefault,
+    background: COLOR_VARIANTS.surfaceBrand,
   },
   red: {
-    color: colors.textWhiteDefault,
-    background: colors.red,
+    color: COLOR_VARIANTS.textWhiteDefault,
+    background: COLOR_VARIANTS.surfaceDanger,
   },
   gray: {
-    color: colors.textDefault,
-    background: colors.surfaceAlt,
+    color: COLOR_VARIANTS.textDefault,
+    background: COLOR_VARIANTS.surfaceAlt,
   },
   transparent: {
-    color: colors.textDefault,
+    color: COLOR_VARIANTS.textDefault,
     background: "none",
   },
 };

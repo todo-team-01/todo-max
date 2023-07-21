@@ -20,12 +20,8 @@ export const RemoveModal = ({
 
   useEffect(() => {
     isOpen && modalRef.current?.showModal();
+    !isOpen && modalRef.current?.close();
   }, [isOpen]);
-
-  const handleClickClose = () => {
-    closeHandler();
-    modalRef.current?.close();
-  };
 
   return (
     <dialog
@@ -42,7 +38,7 @@ export const RemoveModal = ({
         ${dropShadow.up}
       `}
       ref={modalRef}
-      onClose={handleClickClose}
+      onClose={closeHandler}
     >
       <div
         css={{
@@ -54,7 +50,7 @@ export const RemoveModal = ({
       >
         <div>{text}</div>
         <div css={{ display: "flex", justifyContent: "space-between" }}>
-          <Button pattern="text" variant="gray" onClick={handleClickClose}>
+          <Button pattern="text" variant="gray" onClick={closeHandler}>
             <span>취소</span>
           </Button>
           <Button pattern="text" variant="red" onClick={removeHandler}>

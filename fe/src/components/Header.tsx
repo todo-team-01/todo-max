@@ -1,33 +1,57 @@
-import { colors } from "@constants/colors";
-import { useState } from "react";
-import { History } from "./History";
+import { COLOR_VARIANTS } from "@constants/colors";
+import { useEffect, useState } from "react";
+import ActionHistoryList from "./ActionHistoryList";
 import { Button } from "./base/Button";
+import { Text } from "./base/Text";
 import { HistoryIcon } from "./icon/HistoryIcon";
 
 export const Header = () => {
-  const [isOpenHistory, setIsOpenHistory] = useState(false);
+  const [isOpenActionHistory, setIsOpenActionHistory] = useState(false);
+  const [isFixed, setIsFixed] = useState(true);
 
-  const openHistory = () => {
-    setIsOpenHistory(true);
+  const openActionHistory = () => setIsOpenActionHistory(true);
+  const closeActionHistory = () => setIsOpenActionHistory(false);
+
+  const handleScroll = () => {
+    setIsFixed(window.scrollY === 0);
   };
 
-  const closeHistory = () => {
-    setIsOpenHistory(false);
-  };
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div
       css={{
-        display: "flex",
-        justifyContent: "space-between",
-        position: "relative",
+        width: "100%",
+        paddingTop: isFixed ? "64px" : "0",
       }}
     >
-      <div>TODO LIST</div>
-      <Button pattern="icon" onClick={openHistory}>
-        <HistoryIcon size={24} rgb={colors.textDefault} />
-      </Button>
-      {isOpenHistory && <History closeHandler={closeHistory} />}
+      <div
+        css={{
+          background: "white",
+          position: isFixed ? "fixed" : "relative",
+          top: "0%",
+          left: "5%",
+          width: "90%",
+          height: "64px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text typography="displayBold24">TODO LIST</Text>
+        <Button pattern="icon" onClick={openActionHistory}>
+          <HistoryIcon size={24} rgb={COLOR_VARIANTS.textDefault} />
+        </Button>
+        {isOpenActionHistory && (
+          <ActionHistoryList onClose={closeActionHistory} />
+        )}
+      </div>
     </div>
   );
 };
+
